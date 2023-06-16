@@ -1,15 +1,14 @@
 #include <bits/stdc++.h> 
-using namespace std;
 #define pii pair<int, int>
 
 #include "object.h"
-
 #include "miscsymbols.h"
 #include "blockgroup.h"
-
 #include "util.h"
-
 #include "grid.h"
+
+using std::cout;
+using std::endl;
 
 int main()
 {

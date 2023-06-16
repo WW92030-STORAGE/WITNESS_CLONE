@@ -1,3 +1,6 @@
+#ifndef MISC_H
+#define MISC_H
+
 class Endpoint : public Object {
     public:
     bool starting;
@@ -57,3 +60,5 @@ class Cancel : public Object {
         ignored = false;
     }
 };
+
+#endif

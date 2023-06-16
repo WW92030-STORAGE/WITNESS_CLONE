@@ -1,3 +1,8 @@
+#ifndef OBJECT_H
+#define OBJECT_H
+
+#include <climits>
+
 enum Color { // Color is an enum to prevent exploiting loopholes (e.g. 2 similar colors considered different)
     NIL = INT_MAX, // Empty color
     
@@ -43,3 +48,5 @@ class Object {
         
     }
 };
+
+#endif

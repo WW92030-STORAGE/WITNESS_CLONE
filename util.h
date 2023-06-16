@@ -1,10 +1,21 @@
+#ifndef UTIL_H
+#define UTIL_H
+
+#include <string>
+#include "object.h"
+#include "blockgroup.h"
+#include "miscsymbols.h"
+
+using std::string;
+using std::to_string;
+
 template<typename Base, typename T>
 inline bool instanceof(T *ptr) {
     T* x = dynamic_cast<Base*>(ptr);
     return x != nullptr;
 }
 
-string get_type(Object* o) {
+inline string get_type(Object* o) {
     if (instanceof<BlockGroup>(o)) return "+BLOCK";
     if (instanceof<Endpoint>(o)) {
         if ((dynamic_cast<Endpoint*>(o))->starting) return "START!";
@@ -23,7 +34,7 @@ string get_type(Object* o) {
     return "OBJECT";
 }
 
-bool isStartingPoint(Object* o) {
+inline bool isStartingPoint(Object* o) {
     if (instanceof<Endpoint>(o)) {
         if ((dynamic_cast<Endpoint*>(o))->starting) return true;
         return false;
@@ -31,7 +42,7 @@ bool isStartingPoint(Object* o) {
     return false;
 }
 
-bool isEndingPoint(Object* o) {
+inline bool isEndingPoint(Object* o) {
     if (instanceof<Endpoint>(o)) {
         if ((dynamic_cast<Endpoint*>(o))->starting) return false;
         return true;
@@ -39,7 +50,7 @@ bool isEndingPoint(Object* o) {
     return false;
 }
 
-bool isSymbol(Object* o) {
+inline bool isSymbol(Object* o) {
     if (instanceof<BlockGroup>(o)) return true;
     if (instanceof<Endpoint>(o)) return true;
     if (instanceof<Dot>(o)) return true;
@@ -49,3 +60,5 @@ bool isSymbol(Object* o) {
     if (instanceof<Cancel>(o)) return true;
     return false;
 }
+
+#endif
