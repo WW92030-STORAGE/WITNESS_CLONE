@@ -15,7 +15,7 @@ The grid is composed of Lines and enclosed Cells. <br/>
 The solution line/curve is denoted as the Path. The Path will partition the grid into one or more Regions. <br/>
 A Region is a set of grid Cells connected along the cardinal directions such that no two adjacent Cells have the Path as a border.<br/>
 
-# THE RULES
+# THE RULES【SPOILERS】
 
 【HEXAGON DOTS】- The Path must intersect every one. <br/>
 【COLORED BLOBS】- The Region containing the blob cannot have anything of a different color.<br/>
