@@ -1,26 +1,20 @@
-#include <bits/stdc++.h> 
-#include <ext/pb_ds/assoc_container.hpp>
-using namespace std;
-using namespace __gnu_pbds;
-#define pii pair<int, int>
-
-class BlockGroup {
+class BlockGroup : public Object {
     public:
     bool oriented;
     bool sub;
-    set<pii> pairs;
+    set<pair<int, int>> pairs;
     int n;
     
-    pii bottomleft;
-    pii topright;
-    pii boundingbox;
+    pair<int, int> bottomleft;
+    pair<int, int> topright;
+    pair<int, int> boundingbox;
     
-    const pii NIL = {INT_MIN, INT_MIN};
+    const pair<int, int> NIL = {INT_MIN, INT_MIN};
     
-    BlockGroup(bool orientation, bool subtractive, vector<pii> v) {
+    BlockGroup(bool orientation, bool subtractive, vector<pair<int, int>> v, Color c) : Object() {
         oriented = orientation;
         sub = subtractive;
-        pairs = set<pii>();
+        pairs = set<pair<int, int>>();
         n = v.size();
         bottomleft = {INT_MAX, INT_MAX};
         topright = {INT_MIN, INT_MIN};
@@ -33,32 +27,54 @@ class BlockGroup {
         }
         
         boundingbox = {topright.first - bottomleft.first + 1, topright.second - bottomleft.second + 1};
+        
+        color = c;
+    }
+    
+    BlockGroup(bool orientation, bool subtractive, vector<pair<int, int>> v) : Object() {
+        oriented = orientation;
+        sub = subtractive;
+        pairs = set<pair<int, int>>();
+        n = v.size();
+        bottomleft = {INT_MAX, INT_MAX};
+        topright = {INT_MIN, INT_MIN};
+        for (int i = 0; i < n; i++) {
+            pairs.insert(make_pair(v[i].first, v[i].second));
+            bottomleft.first = min(bottomleft.first, v[i].first);
+            bottomleft.second = min(bottomleft.second, v[i].second);
+            topright.first = max(topright.first, v[i].first);
+            topright.second = max(topright.second, v[i].second);
+        }
+        
+        boundingbox = {topright.first - bottomleft.first + 1, topright.second - bottomleft.second + 1};
+        
+        color = YELLOW;
     }
     
     // Utility Functions
     
-    bool contains(pii p) {
+    bool contains(pair<int, int> p) {
         return pairs.find(p) != pairs.end();
     }
     
-    void add(pii p) {
+    void add(pair<int, int> p) {
         pairs.insert(p);
         n++;
         return;
     }
     
-    void remove(pii p) {
+    void remove(pair<int, int> p) {
         if (!contains(p)) return;
         pairs.erase(pairs.find(p));
         n--;
         return;
     }
     
-    void reset(vector<pii> p) {
+    void reset(vector<pair<int, int>> p) {
         pairs.clear();
         bottomleft = {INT_MAX, INT_MAX};
         topright = {INT_MIN, INT_MIN};
-        for (pii x : p) {
+        for (pair<int, int> x : p) {
             pairs.insert(x);
             bottomleft.first = min(bottomleft.first, x.first);
             bottomleft.second = min(bottomleft.second, x.second);
@@ -70,7 +86,7 @@ class BlockGroup {
     }
     
     BlockGroup clone() {
-        vector<pii> res;
+        vector<pair<int, int>> res;
         for (auto i : pairs) res.push_back(make_pair(i.first, i.second));
         return BlockGroup(oriented, sub, res);
     }
@@ -82,20 +98,20 @@ class BlockGroup {
         x %= 4;
         if (x <= 0) return;
         rotate(x - 1);
-        vector<pii> res;
+        vector<pair<int, int>> res;
         for (auto i : pairs) res.push_back(make_pair(-1 * i.second, i.first));
         
         reset(res);
     }
     
-    void move(pii p) {
-        vector<pii> res;
+    void move(pair<int, int> p) {
+        vector<pair<int, int>> res;
         for (auto i : pairs) res.push_back(make_pair(i.first + p.first, i.second + p.second));
         reset(res);
     }
     
-    void invmov(pii p) {
-        vector<pii> res;
+    void invmov(pair<int, int> p) {
+        vector<pair<int, int>> res;
         for (auto i : pairs) res.push_back(make_pair(i.first - p.first, i.second - p.second));
         reset(res);
     }
@@ -105,11 +121,11 @@ class BlockGroup {
     }
     
     void removeRegion(BlockGroup x) {
-        for (pii p : x.pairs) remove(p);
+        for (pair<int, int> p : x.pairs) remove(p);
     }
     
     void addRegion(BlockGroup x) {
-        for (pii p : x.pairs) add(p);
+        for (pair<int, int> p : x.pairs) add(p);
     }
     
     string to_string() {
@@ -144,15 +160,15 @@ class BlockGroup {
     
     bool directoverlay(BlockGroup b) { // Does this region contain region b in terms of absolute coordinates?
     if (n < b.n) return false;
-        for (pii p : b.pairs) {
+        for (pair<int, int> p : b.pairs) {
             if (!contains(p)) return false;
         }
         return true;
     }
     
-    vector<pii> fixedoverlay(BlockGroup b) { // Does this region contain region b? Return the offset if yes, INT_MIN if no.
+    vector<pair<int, int>> fixedoverlay(BlockGroup b) { // Does this region contain region b? Return the offset if yes, INT_MIN if no.
         // This only affects one rotation.
-        if (n < b.n) return vector<pii>();
+        if (n < b.n) return vector<pair<int, int>>();
         // the starting offset is the absolute difference in bounding boxes
         // the ending offset is the width of the smaller bounding box in the larger one
         
@@ -169,7 +185,7 @@ class BlockGroup {
         int width = abs(boundingbox.first - b.boundingbox.first);
         int height = abs(boundingbox.second - b.boundingbox.second);
         
-        vector<pii> res;
+        vector<pair<int, int>> res;
         // cout << "EFFECTIVE BOX " << width << " " << height << endl;
         for (int i = 0; i <= width; i++) {
             for (int j = 0; j <= height; j++) {
@@ -184,8 +200,8 @@ class BlockGroup {
         return res;
     }
     
-    vector<vector<pii>> overlay(BlockGroup b) {
-        vector<vector<pii>> res(4, vector<pii>());
+    vector<vector<pair<int, int>>> overlay(BlockGroup b) {
+        vector<vector<pair<int, int>>> res(4, vector<pair<int, int>>());
         res[0] = fixedoverlay(b);
         if (!b.oriented) {
             BlockGroup test = b.clone();
@@ -209,7 +225,7 @@ class BlockGroup {
         
         BlockGroup group = v[index].clone();
         group.normalize();
-        vector<vector<pii>> options = region.overlay(group);
+        vector<vector<pair<int, int>>> options = region.overlay(group);
         
         bool res = false;
         for (int i = 0; i < 4; i++) {
