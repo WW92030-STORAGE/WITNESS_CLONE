@@ -27,4 +27,4 @@ The Path must begin at a Starting Point (rendered as a circle) and end at an End
 
 # TO DO
 
-Implement a more efficient algorithm for Polynomino region checker.
+Implement (or find) a more efficient algorithm for Polynomino region checker.
