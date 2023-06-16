@@ -16,6 +16,10 @@ string get_type(Object* o) {
     if (instanceof<Triangle>(o)) {
         return "TRIX_" + to_string((dynamic_cast<Triangle*>(o))->x);
     }
+    if (instanceof<Cancel>(o)) {
+        if (!(dynamic_cast<Cancel*>(o))->ignored) return "CANCEL";
+        else return "OBJECT";
+    }
     return "OBJECT";
 }
 
@@ -32,5 +36,16 @@ bool isEndingPoint(Object* o) {
         if ((dynamic_cast<Endpoint*>(o))->starting) return false;
         return true;
     }
+    return false;
+}
+
+bool isSymbol(Object* o) {
+    if (instanceof<BlockGroup>(o)) return true;
+    if (instanceof<Endpoint>(o)) return true;
+    if (instanceof<Dot>(o)) return true;
+    if (instanceof<Star>(o)) return true;
+    if (instanceof<Blob>(o)) return true;
+    if (instanceof<Triangle>(o)) return true;
+    if (instanceof<Cancel>(o)) return true;
     return false;
 }
