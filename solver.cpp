@@ -56,11 +56,11 @@ Solver::Solver() {
     }
     
     vector<pair<int, int>> Solver::solve() {
-        // cout << "SOLVING" << endl;
+        cout << "SOLVING" << endl;
         solution.clear();
         for (auto i : grid.starts) {
             origin = i;
-            // cout << i.first << " " << i.second << endl;
+            cout << i.first << " " << i.second << endl;
             vis.clear();
             vis.insert({i, i});
             path(i, i);

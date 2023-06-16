@@ -13,6 +13,7 @@ int main()
     // EXAMPLE I
     // https://windmill.thefifthmatt.com/build/CAUSAggDEgIoBRIJCAkiBQgBEgEBEgASBAgIEAESAigHEgQICzABEgASBAgIEAESAigFEgIIBA==_0
     vector<vector<Object*>> v(5, vector<Object*>(5));
+    
     for (int i = 0; i < 5; i++) {
         for (int j = 0; j < 5; j++) v[i][j] = new Object();
     }
@@ -111,6 +112,41 @@ int main()
     sx.solve();
     sx.disp();
     
+    // EXAMPLE V
+    // https://windmill.thefifthmatt.com/build/CAkSAigHEgIIBRIICAQaBAgCEAASAigCEgIIBRIAEgIIBRICKAUSAggFEgIoAxICCAUSAigFEgIIBRICKAMSAggFEgASAggFEgASAggFEgIoBRICCAUSAigFEgIIBRICKAcSAggFEgIoAxICCAUSABICCAUSABICCAUSAigGEgIIAxICKAg=_0
+    
+    v = vector<vector<Object*>>(9, vector<Object*>(9));
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            v[i][j] = new Object();
+            if (i % 2 == 0 || j % 2 == 0) v[i][j]->isPath = true;
+        }
+    }
+    
+    v[8][0] = new Endpoint(true);
+    v[0][8] = new Endpoint(false);
+    
+    v[0][7]->isPath = false;
+    v[1][2]->isPath = false;
+    v[1][4]->isPath = false;
+    v[2][1]->isPath = false;
+    v[2][5]->isPath = false;
+    v[3][2]->isPath = false;
+    v[3][6]->isPath = false;
+    v[3][8]->isPath = false;
+    v[4][1]->isPath = false;
+    v[4][7]->isPath = false;
+    v[5][4]->isPath = false;
+    v[6][3]->isPath = false;
+    v[6][7]->isPath = false;
+    v[7][2]->isPath = false;
+    v[7][0]->isPath = false;
+    
+    Grid grid5 = Grid(v);
+    
+    sx.set(grid5);
+    sx.solve();
+    sx.disp();
     
     return 0;
 }

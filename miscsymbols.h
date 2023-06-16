@@ -6,6 +6,7 @@ class Endpoint : public Object {
     bool starting;
     Endpoint(bool s) : Object() {
         starting = s;
+        isPath = true;
     }
 };
 
