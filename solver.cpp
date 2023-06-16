@@ -12,6 +12,7 @@ Solver::Solver() {
     
     void Solver::set(Grid g) {
         grid = g;
+        solution.clear();
     }
     
     void Solver::path(pair<int, int> src, pair<int, int> prev) {
@@ -20,7 +21,6 @@ Solver::Solver() {
         if ((grid.ends).find(src) != (grid.ends).end()) {
             grid.board[src.first][src.second]->isPathOccupied = true;
             // cout << "ENDPOINT " << src.first << " " << src.second << endl;
-            grid.to_string(); // Somehow this is needed. I don't know why.
             
             bool check = grid.ver(origin.first, origin.second);
             // cout << (check ? "PASSED\n" : "FAILED\n");
@@ -70,6 +70,9 @@ Solver::Solver() {
     }
     
     string Solver::to_string() {
+        for (auto i : grid.board) {
+            for (auto j : i) j->isPathOccupied = false;
+        }
         for (auto i : solution) grid.board[i.first][i.second]->isPathOccupied = true;
         string res = grid.to_string();
         for (auto i : solution) grid.board[i.first][i.second]->isPathOccupied = false;
