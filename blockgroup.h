@@ -39,7 +39,7 @@ class BlockGroup : public Object {
     
     void remove(pair<int, int> p);
     
-    void reset(vector<pair<int, int>> p);
+    void reset(vector<pair<int, int>>& p);
     
     BlockGroup clone();
     
@@ -73,7 +73,7 @@ class BlockGroup : public Object {
     
     // Now for the real thing
     
-    bool dfsUtil(BlockGroup region, vector<BlockGroup> v, int index);
+    bool dfsUtil(BlockGroup region, vector<BlockGroup>& v, int index);
     
     bool solve(vector<BlockGroup> v);
 };

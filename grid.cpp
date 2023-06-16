@@ -12,7 +12,7 @@ using std::endl;
 using std::pair;
 using std::make_pair;
 
-Grid::Grid(vector<vector<Object*>> v) { // Once a grid is created it cannot be changed (except to change path/occupied status).
+Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be changed unless changes are consistent across all aspects.
         n = v.size();
         m = 0;
         for (auto i : v) m = max((int)(i.size()), m);
@@ -61,6 +61,10 @@ Grid::Grid(vector<vector<Object*>> v) { // Once a grid is created it cannot be c
         }
     }
     
+    Grid::Grid() {
+        
+    }
+    
     Grid::~Grid() {
         
     }
@@ -70,8 +74,8 @@ Grid::Grid(vector<vector<Object*>> v) { // Once a grid is created it cannot be c
         string s = "";
         for (auto i : board) {
             for (auto j : i) {
-                char open = j->isPathOccupied ? '[' : '_';
-                char close = j->isPathOccupied ? ']' : '_';
+                char open = j->isPathOccupied ? '[' : (j->isPath ? '+' : '_');
+                char close = j->isPathOccupied ? ']' : (j->isPath ? '+' : '_');
                 s = s + open + get_type(j) + close + " ";
             }
             s = s + "\n";
@@ -381,7 +385,7 @@ Grid::Grid(vector<vector<Object*>> v) { // Once a grid is created it cannot be c
             */
             
             vector<pair<int, int>> regionvec;
-            for (auto i : region) regionvec.push_back(make_pair((i.first)>>1, -1 * (i.second)>>1));
+            for (auto i : region) regionvec.push_back(make_pair((i.second)>>1, -1 * (i.first)>>1));
             
             BlockGroup testregion = BlockGroup(1, 0, regionvec);
             vector<BlockGroup> pieces;

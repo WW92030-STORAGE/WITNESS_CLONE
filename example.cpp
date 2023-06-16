@@ -6,15 +6,12 @@
 #include "blockgroup.h"
 #include "util.h"
 #include "grid.h"
-
-using std::cout;
-using std::endl;
+#include "solver.h"
 
 int main()
 {
     // EXAMPLE I
     // https://windmill.thefifthmatt.com/build/CAUSAggDEgIoBRIJCAkiBQgBEgEBEgASBAgIEAESAigHEgQICzABEgASBAgIEAESAigFEgIIBA==_0
-    
     vector<vector<Object*>> v(5, vector<Object*>(5));
     for (int i = 0; i < 5; i++) {
         for (int j = 0; j < 5; j++) v[i][j] = new Object();
@@ -27,27 +24,13 @@ int main()
     v[3][1] = new Triangle(1);
     v[1][3] = new Star(BLACK);
     
-    
-    v[0][0]->isPathOccupied = true;
-    v[1][0]->isPathOccupied = true;
-    v[2][0]->isPathOccupied = true;
-    v[2][1]->isPathOccupied = true;
-    v[2][2]->isPathOccupied = true;
-    v[1][2]->isPathOccupied = true;
-    v[0][2]->isPathOccupied = true;
-    v[0][3]->isPathOccupied = true;
-    v[0][4]->isPathOccupied = true;
-    v[1][4]->isPathOccupied = true;
-    v[2][4]->isPathOccupied = true;
-    v[3][4]->isPathOccupied = true;
-    v[4][4]->isPathOccupied = true;
-    
     Grid grid = Grid(v);
     grid.defaultGrid();
     
-    grid.disp();
+    Solver sx = Solver(grid);
     
-    cout << grid.ver(0, 0) << endl;
+    sx.solve();
+    sx.disp();
     
     // EXAMPLE II
     // https://windmill.thefifthmatt.com/build/CAcSAigGEgIIBBIAEgQIBxAFEgASCggJIgYIARICAQESABIECAcQARICKAkSBAgHEAESABIJCAkiBQgBEgEBEgASBAgHEAESAigJEgQIBxACEgASBAgHEAESABICCAoSABICCAMSAigG_0
@@ -72,16 +55,9 @@ int main()
     Grid grid2 = Grid(v);
     grid2.defaultGrid();
     
-    grid2.drawLine({6, 0}, {2, 0});
-    grid2.drawLine({2, 0}, {2, 2});
-    grid2.drawLine({2, 2}, {4, 2});
-    grid2.drawLine({4, 2}, {4, 4});
-    grid2.drawLine({4, 4}, {0, 4});
-    grid2.drawLine({0, 4}, {0, 6});
-    
-    grid2.disp();
-    
-    cout << grid2.ver(6, 0) << endl;
+    sx.set(grid2);
+    sx.solve();
+    sx.disp();
     
     // EXAMPLE III
     // https://windmill.thefifthmatt.com/build/CAkSAigIEggIBBoECAIQABICKAMSAggKEgASBAgLMAESAigfEgwICSIICAISBAEBAQESABICCAoSAigHEgIIBhICKAcSAggKEgASCwgJIgcIAxIDAQEBEgIoBRICCAMSAigI_0
@@ -105,23 +81,12 @@ int main()
     Grid grid3 = Grid(v);
     grid3.defaultGrid();
     
-    grid3.drawLine({8, 0}, {4, 0});
-    grid3.drawLine({4, 0}, {4, 4});
-    grid3.drawLine({4, 4}, {8, 4});
-    grid3.drawLine({8, 4}, {8, 8});
-    grid3.drawLine({8, 8}, {0, 8});
+    sx.set(grid3);
+    sx.solve();
+    sx.disp();
     
-    grid3.disp();
-    cout << grid3.ver(8, 0) << endl;
     return 0;
 }
 
 
-/*
 
-The board is represented as a (2n+1)x(2n+1) grid of objects. One is the entrance and one is the exit.
-Objects are the base class for everything in the puzzle. Can be empty, path, start, end, dot, or symbol.
-Even indexes denote lines that the path can travel on. Cuts obstruct the path.
-Entirely odd indices denote spaces where symbols reside.
-
-*/

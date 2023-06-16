@@ -74,7 +74,7 @@ BlockGroup::BlockGroup(bool orientation, bool subtractive, vector<pair<int, int>
         return;
     }
     
-    void BlockGroup::reset(vector<pair<int, int>> p) {
+    void BlockGroup::reset(vector<pair<int, int>>& p) {
         pairs.clear();
         bottomleft = {INT_MAX, INT_MAX};
         topright = {INT_MIN, INT_MIN};
@@ -222,7 +222,7 @@ BlockGroup::BlockGroup(bool orientation, bool subtractive, vector<pair<int, int>
     
     // Now for the real thing
     
-    bool BlockGroup::dfsUtil(BlockGroup region, vector<BlockGroup> v, int index) {
+    bool BlockGroup::dfsUtil(BlockGroup region, vector<BlockGroup>& v, int index) {
         // cout << index << " ";
         // region.disp();
         if (index >= v.size()) return region.n == 0;
@@ -243,6 +243,7 @@ BlockGroup::BlockGroup(bool orientation, bool subtractive, vector<pair<int, int>
                 group.invmov(op);
                 
             }
+            if (group.oriented) break;
             group.rotate(1);
             group.normalize();
         }
