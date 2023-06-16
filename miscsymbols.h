@@ -48,3 +48,12 @@ class Triangle : public Object {
         color = c;
     }
 };
+
+class Cancel : public Object {
+    public:
+    bool ignored;
+    Cancel() : Object() {
+        color = NIL;
+        ignored = false;
+    }
+};
