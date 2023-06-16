@@ -11,6 +11,7 @@ class Grid {
     set<pair<int, int>> stars;
     set<pair<int, int>> blocks;
     set<pair<int, int>> cancels;
+    set<pair<int, int>> ignored; // ignored cancel operations
     
     pair<int, int> begin;
     
@@ -39,7 +40,7 @@ class Grid {
                 if (instanceof<Star>(board[i][j])) stars.insert({i, j});
                 if (instanceof<Triangle>(board[i][j])) triangles.insert({i, j});
                 if (instanceof<BlockGroup>(board[i][j])) blocks.insert({i, j});
-                // if (instanceof<Cancel>(board[i][j])) cancels.insert({i, j});
+                if (instanceof<Cancel>(board[i][j])) cancels.insert({i, j});
             }
         }
     }
@@ -94,7 +95,8 @@ class Grid {
     }
     
     bool ver(int sx, int sy) {
-        // The algorithm works in four stages: THE FOX / THE WOLF / THE DRUDE / THE SERGAL
+        // cout << "VERIFYING GRID" << endl;
+        // The algorithm works in four stages: THE FOX / THE WOLF / THE DRUDE / THE PHOENIX
         
         // The first section denoted THE FOX begins by handling the more trivial matters.
         // Just as foxes are easily recognizable, the tasks for this section are relatively self-explanatory and easy to check.
@@ -107,6 +109,8 @@ class Grid {
         if (!isStartingPoint(board[sx][sy])) return false;
         Object* o = board[sx][sy];
         if (!o->isPathOccupied) return false;
+        
+        // cout << "BASIC CHECK COMPLETED";
         
         set<pair<int, int>> vis;
         queue<pair<int, int>> q;
@@ -371,11 +375,13 @@ class Grid {
                 }
             }
             
+            /*
             cout << "TETRIS LOCATIONS" << endl;
             for (auto i : collected) cout << i.first << " " << i.second << endl;
             
             cout << "REGION" << endl;
             for (auto i : region) cout << i.first << " " << i.second << endl;
+            */
             
             vector<pair<int, int>> regionvec;
             for (auto i : region) regionvec.push_back(make_pair((i.first)>>1, -1 * (i.second)>>1));
@@ -388,18 +394,97 @@ class Grid {
                 BlockGroup* bg = dynamic_cast<BlockGroup*>(o);
                 pieces.push_back(*bg);
             }
-            if (testregion.solve(pieces)) cout << "VALID";
+            if (testregion.solve(pieces));
             else {
                 for (auto i : collected) violations.insert(i);
             }
         }
         
-        // END
+        // THE PHOENIX is an immortal creature, one that rises from the ashes once its life is over.
+        // Similarly,we must start again from scratch when we encounter a cancellation symbol.
+        // The way we do this is by removing it and another symbol then rechecking our current path against the new grid.
+        // If there are no cancels the method simply returns what we have now.
         
-        cout << "NET VIOLATIONS\n"; 
-        for (auto i : violations) cout << i.first << " " << i.second << endl;
+        if (cancels.size() == 0 || ignored.size() == cancels.size()) {
+            // cout << "NET VIOLATIONS - NON-CANCELLED ENDING\n"; 
+            // for (auto i : violations) cout << i.first << " " << i.second << endl;
         
-        return true;
+            return violations.size() == 0;
+        }
+        
+        // cout << "NET VIOLATIONS - MOVING TO CANCELS..." << endl;
+        // for (auto i : violations) cout << i.first << " " << i.second << endl;
+        
+        if (violations.size() == 0) return false; // There are cancels!!!
+        
+        vis.clear();
+        for (auto ii : cancels) {
+            if (ignored.find(ii) != ignored.end()) continue;
+            collected.clear();
+            queue<pair<int, int>> q;
+            q.push(ii);
+            while (q.size() > 0) {
+                pair<int, int> now = q.front();
+                q.pop();
+                vis.insert(now);
+                region.insert(now);
+                
+                // cout << now.first << " / " << now.second << endl;
+                
+                Object* cur = board[now.first][now.second];
+                if (isSymbol(cur) && !instanceof<Cancel>(cur)) {
+                    if (violations.find(now) != violations.end()) collected.insert(now);
+                }
+                for (int i = 0; i < 4; i++) {
+                    pair<int, int> next = {now.first + dx[i], now.second + dy[i]};
+                    if (!inside(next)) continue;
+                    Object* hit = board[next.first][next.second];
+                    if (hit->isPathOccupied) continue;
+                    if (vis.find(next) != vis.end()) continue;
+                    vis.insert(next);
+                    q.push(next);
+                }
+            }
+            
+            ignored.insert(ii);
+            (dynamic_cast<Cancel*>(board[ii.first][ii.second]))->ignored = true;
+            
+            // cout << "SYMBOL LOCATIONS FOR CANCEL " << ii.first << " " << ii.second << endl;
+            // cout << "CANCEL STATUS " << cancels.size() << " " << ignored.size() << endl;
+            bool retval = false;
+            for (auto i : collected) {
+                // cout << i.first << " " << i.second << endl;
+                Object* o = board[i.first][i.second];
+                board[i.first][i.second] = o->clear();
+                if (instanceof<Dot>(o)) dots.erase(dots.find(i));
+                else if (instanceof<Star>(o)) stars.erase(stars.find(i));
+                else if (instanceof<Blob>(o)) blobs.erase(blobs.find(i));
+                else if (instanceof<Triangle>(o)) triangles.erase(triangles.find(i));
+                else if (instanceof<BlockGroup>(o)) blocks.erase(blocks.find(i));
+                // disp();
+                // cout << "VERIFYING MODIFIED..." << endl;
+                if (ver(sx, sy)) {
+                    retval = true;
+                }
+                // cout << "FINISHED VERIFYING MODIFIED\n";
+                board[i.first][i.second] = o;
+                if (instanceof<Dot>(o)) dots.insert(i);
+                else if (instanceof<Star>(o)) stars.insert(i);
+                else if (instanceof<Blob>(o)) blobs.insert(i);
+                else if (instanceof<Triangle>(o)) triangles.insert(i);
+                else if (instanceof<BlockGroup>(o)) blocks.insert(i);
+                if (retval) break;
+            }
+            
+            ignored.erase(ignored.find(ii));
+            (dynamic_cast<Cancel*>(board[ii.first][ii.second]))->ignored = false;
+            // cout << "FINISHED CANCELLING...\n";
+            // disp();
+            if (retval) return true;
+        }
+        
+        
+        return false;
     }
     
     
