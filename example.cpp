@@ -13,6 +13,9 @@ using namespace std;
 
 int main()
 {
+    // EXAMPLE I
+    // https://windmill.thefifthmatt.com/build/CAUSAggDEgIoBRIJCAkiBQgBEgEBEgASBAgIEAESAigHEgQICzABEgASBAgIEAESAigFEgIIBA==_0
+    
     vector<vector<Object*>> v(5, vector<Object*>(5));
     for (int i = 0; i < 5; i++) {
         for (int j = 0; j < 5; j++) v[i][j] = new Object();
@@ -45,7 +48,10 @@ int main()
     
     grid.disp();
     
-    grid.ver(0, 0);
+    cout << grid.ver(0, 0) << endl;
+    
+    // EXAMPLE II
+    // https://windmill.thefifthmatt.com/build/CAcSAigGEgIIBBIAEgQIBxAFEgASCggJIgYIARICAQESABIECAcQARICKAkSBAgHEAESABIJCAkiBQgBEgEBEgASBAgHEAESAigJEgQIBxACEgASBAgHEAESABICCAoSABICCAMSAigG_0
     
     
     v = vector<vector<Object*>>(7, vector<Object*>(7));
@@ -56,7 +62,13 @@ int main()
     v[0][6] = new Endpoint(false);
     v[1][3] = new BlockGroup(1, 0, vector<pii>({{0, 0}, {0, 1}}));
     v[3][3] = new BlockGroup(1, 0, vector<pii>({{0, 0}}));
-    v[5][5] = new Blob(BLACK);
+    v[5][5] = new Cancel();
+    v[1][5] = new Blob(BLACK);
+    v[3][5] = new Blob(BLACK);
+    v[3][1] = new Blob(BLACK);
+    v[5][3] = new Blob(BLACK);
+    v[5][1] = new Blob(WHITE);
+    v[1][1] = new Blob(YELLOW);
     
     Grid grid2 = Grid(v);
     grid2.defaultGrid();
@@ -70,8 +82,38 @@ int main()
     
     grid2.disp();
     
-    grid2.ver(6, 0);
+    cout << grid2.ver(6, 0) << endl;
     
+    // EXAMPLE III
+    // https://windmill.thefifthmatt.com/build/CAkSAigIEggIBBoECAIQABICKAMSAggKEgASBAgLMAESAigfEgwICSIICAISBAEBAQESABICCAoSAigHEgIIBhICKAcSAggKEgASCwgJIgcIAxIDAQEBEgIoBRICCAMSAigI_0
+    
+    v = vector<vector<Object*>>(9, vector<Object*>(9));
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) v[i][j] = new Object();
+    }
+    
+    v[8][0] = new Endpoint(true);
+    v[0][8] = new Endpoint(false);
+    v[5][1] = new BlockGroup(1, 0, vector<pii>({{0, 0}, {0, 1}, {1, 0}, {1, 1}}));
+    v[7][3] = new BlockGroup(1, 0, vector<pii>({{0, 0}, {0, 1}, {0, 2}}));
+    v[6][2] = new Dot();
+    v[5][3] = new Cancel();
+    v[7][1] = new Cancel();
+    
+    v[1][3] = new Cancel();
+    v[1][5] = new Triangle(1);
+    
+    Grid grid3 = Grid(v);
+    grid3.defaultGrid();
+    
+    grid3.drawLine({8, 0}, {4, 0});
+    grid3.drawLine({4, 0}, {4, 4});
+    grid3.drawLine({4, 4}, {8, 4});
+    grid3.drawLine({8, 4}, {8, 8});
+    grid3.drawLine({8, 8}, {0, 8});
+    
+    grid3.disp();
+    cout << grid3.ver(8, 0) << endl;
     return 0;
 }
 
