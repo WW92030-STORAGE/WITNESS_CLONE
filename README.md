@@ -9,11 +9,12 @@ Polynomino region checker (supports fixed and arbitrary rotations but not subtra
 Hexagon dots + colored blobs + triangles + stars + cancellations.<br/>
 Verification of a given path. No custom inputs yet sorry... <br/>
 
-# WHAT DO THE SYMBOLS MEAN?【SPOILERS】
+# DEFINIITIONS【SPOILERS】
 
 The grid is composed of Lines and enclosed Cells. <br/>
 The solution line/curve is denoted as the Path. The Path will partition the grid into one or more Regions. <br/>
 A Region is a set of grid Cells connected along the cardinal directions such that no two adjacent Cells have the Path as a border.<br/>
+The Path must begin at a Starting Point (rendered as a circle) and end at an End Point (rendered as a rounded protrusion from the grid).
 
 # THE RULES【SPOILERS】
 
