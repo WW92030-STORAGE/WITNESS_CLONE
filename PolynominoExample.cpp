@@ -5,6 +5,7 @@ using namespace __gnu_pbds;
 #define pii pair<int, int>
 #define pb push_back
 
+#include "object.h"
 #include "blockgroup.h"
 
 int main()
