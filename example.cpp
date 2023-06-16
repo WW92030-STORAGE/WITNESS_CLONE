@@ -85,6 +85,33 @@ int main()
     sx.solve();
     sx.disp();
     
+    // EXAMPLE IV
+    // https://windmill.thefifthmatt.com/cgchwd8
+    
+    v = vector<vector<Object*>>(9, vector<Object*>(9));
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) v[i][j] = new Object();
+    }
+    
+    v[8][0] = new Endpoint(true);
+    v[0][8] = new Endpoint(false);
+    v[1][3] = new Triangle(2);
+    v[1][5] = new Triangle(2);
+    v[3][3] = new Triangle(1);
+    v[3][5] = new Triangle(1);
+    v[5][7] = new Triangle(1);
+    v[7][1] = new Triangle(1);
+    v[7][3] = new Triangle(2);
+    v[7][7] = new Triangle(2);
+    
+    Grid grid4 = Grid(v);
+    grid4.defaultGrid();
+    
+    sx.set(grid4);
+    sx.solve();
+    sx.disp();
+    
+    
     return 0;
 }
 
