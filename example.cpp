@@ -4,18 +4,14 @@ using namespace std;
 
 #include "object.h"
 
-#include "ends.h"
+#include "miscsymbols.h"
 #include "blockgroup.h"
-#include "hexagon.h"
-#include "blob.h"
-#include "star.h"
-#include "triangle.h"
 
 #include "util.h"
 
 #include "grid.h"
 
-int main() // EXAMPLES OF PATHS AND VERIFICATIONS
+int main()
 {
     vector<vector<Object*>> v(5, vector<Object*>(5));
     for (int i = 0; i < 5; i++) {
@@ -60,7 +56,7 @@ int main() // EXAMPLES OF PATHS AND VERIFICATIONS
     v[0][6] = new Endpoint(false);
     v[1][3] = new BlockGroup(1, 0, vector<pii>({{0, 0}, {0, 1}}));
     v[3][3] = new BlockGroup(1, 0, vector<pii>({{0, 0}}));
-    v[5][5] = new Blob(RED);
+    v[5][5] = new Blob(BLACK);
     
     Grid grid2 = Grid(v);
     grid2.defaultGrid();
