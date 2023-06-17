@@ -10,9 +10,13 @@
 
 int main()
 {
+    vector<vector<Object*>> v;
+    Solver sx = Solver(Grid());
+    
     // EXAMPLE I
     // https://windmill.thefifthmatt.com/build/CAUSAggDEgIoBRIJCAkiBQgBEgEBEgASBAgIEAESAigHEgQICzABEgASBAgIEAESAigFEgIIBA==_0
-    vector<vector<Object*>> v(5, vector<Object*>(5));
+    
+    v = vector<vector<Object*>>(5, vector<Object*>(5));
     
     for (int i = 0; i < 5; i++) {
         for (int j = 0; j < 5; j++) v[i][j] = new Object();
@@ -28,8 +32,7 @@ int main()
     Grid grid = Grid(v);
     grid.defaultGrid();
     
-    Solver sx = Solver(grid);
-    
+    sx.set(grid);
     sx.solve();
     sx.disp();
     
@@ -111,6 +114,9 @@ int main()
     sx.set(grid4);
     sx.solve();
     sx.disp();
+    cout << "END OF EXAMPLE IV\n";
+    
+    /*
     
     // EXAMPLE V
     // https://windmill.thefifthmatt.com/build/CAkSAigHEgIIBRIICAQaBAgCEAASAigCEgIIBRIAEgIIBRICKAUSAggFEgIoAxICCAUSAigFEgIIBRICKAMSAggFEgASAggFEgASAggFEgIoBRICCAUSAigFEgIIBRICKAcSAggFEgIoAxICCAUSABICCAUSABICCAUSAigGEgIIAxICKAg=_0
@@ -145,6 +151,33 @@ int main()
     Grid grid5 = Grid(v);
     
     sx.set(grid5);
+    sx.solve();
+    sx.disp();
+    
+    */
+    
+    // EXAMPLE VI
+    // https://windmill.thefifthmatt.com/build/CAkSAigIEggIBBoECAIQABICKBUSDAgJIggIAhIEAQEBABICKAMSDAgJIggIAhIEAQEAARICKAYSAggFEgIoDxICCAUSAigOEgIIAxICKAg=_0
+    
+    v = vector<vector<Object*>>(9, vector<Object*>(9));
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+            v[i][j] = new Object();
+            if (i % 2 == 0 || j % 2 == 0) v[i][j]->isPath = true;
+        }
+    }
+    
+    v[8][0] = new Endpoint(true);
+    v[0][8] = new Endpoint(false);
+    
+    v[6][3]->isPath = false;
+    v[4][5]->isPath = false;
+    v[3][3] = new BlockGroup(1, 0, vector<pii>({{0, 0}, {0, 1}, {1, 1}}));
+    v[3][7] = new BlockGroup(1, 0, vector<pii>({{0, 0}, {0, 1}, {-1, 1}}));
+    
+    Grid grid6 = Grid(v);
+    
+    sx.set(grid6);
     sx.solve();
     sx.disp();
     

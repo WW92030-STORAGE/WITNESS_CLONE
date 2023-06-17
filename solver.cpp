@@ -1,5 +1,9 @@
 #include "solver.h"
 
+#include <set>
+using std::set;
+using std::pair;
+
 Solver::Solver() {
         grid = Grid();
         solution = vector<pair<int, int>>();
@@ -16,11 +20,13 @@ Solver::Solver() {
     }
     
     void Solver::path(pair<int, int> src, pair<int, int> prev) {
+        callstopath++;
         // cout << "[" << src.first << " " << src.second << "]\n";
         if (solution.size() > 0) return;
         if ((grid.ends).find(src) != (grid.ends).end()) {
             grid.board[src.first][src.second]->isPathOccupied = true;
             // cout << "ENDPOINT " << src.first << " " << src.second << endl;
+            // grid.disp();
             
             bool check = grid.ver(origin.first, origin.second);
             // cout << (check ? "PASSED\n" : "FAILED\n");
@@ -41,10 +47,43 @@ Solver::Solver() {
             return;
         }
         
+        // Basic pruning action
+        // This can be toggled by changing the loop constraints.
+        
+        for (int ii = 0; ii < 4; ii++) {
+            pair<int, int> x0 = {src.first + dx[(ii + 0) % 4], src.second + dy[(ii + 0) % 4]};
+            pair<int, int> x1 = {src.first + dx[(ii + 1) % 4], src.second + dy[(ii + 1) % 4]};
+            pair<int, int> x2 = {src.first + dx[(ii + 2) % 4], src.second + dy[(ii + 2) % 4]};
+            pair<int, int> x3 = {src.first + dx[(ii + 3) % 4], src.second + dy[(ii + 3) % 4]};
+            bool blocked0 = !grid.inside(x0);
+            bool blocked1 = !grid.inside(x1) || grid.board[x1.first][x1.second]->isPathOccupied;
+            bool blocked2 = !grid.inside(x2);
+            bool blocked3 = !grid.inside(x3) || grid.board[x3.first][x3.second]->isPathOccupied;
+            
+            vector<pair<int, int>> banned({src, x0});
+            
+            if (blocked0 && !blocked1 && !blocked3) {
+                // cout << "BLOCKED!!!  " << src.first << " " << src.second << endl;
+                // grid.disp();
+                bool r1 = grid.validateRegion(x1.first, x1.second, banned);
+                bool r3 = grid.validateRegion(x3.first, x3.second, banned);
+                
+                if (!r1 && !r3) {
+                    // cout << "INVALID" << endl;
+                    return;
+                }
+                break;
+            }
+        }
+        
         vis.insert({src, prev});
         grid.board[src.first][src.second]->isPathOccupied = true;
         
-        for (int i = 0; i < 4; i++) {
+        srand(time(0));
+        int offset = rand() % 4;
+        
+        for (int ii = 0; ii < 4; ii++) {
+            int i = (ii + offset) % 4;
             pair<int, int> next = {src.first + dx[i], src.second + dy[i]};
             if (!grid.inside(next)) continue;
             if (!grid.board[next.first][next.second]->isPath) continue;
@@ -56,11 +95,12 @@ Solver::Solver() {
     }
     
     vector<pair<int, int>> Solver::solve() {
-        cout << "SOLVING" << endl;
+        // cout << "SOLVING" << endl;
+        callstopath = 0;
         solution.clear();
         for (auto i : grid.starts) {
             origin = i;
-            cout << i.first << " " << i.second << endl;
+            // cout << i.first << " " << i.second << endl;
             vis.clear();
             vis.insert({i, i});
             path(i, i);
@@ -81,4 +121,5 @@ Solver::Solver() {
     
     void Solver::disp() {
         cout << to_string() << endl;
+        cout << callstopath << " CALLS TO PATH\n\n";
     }

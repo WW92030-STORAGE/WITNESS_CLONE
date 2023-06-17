@@ -18,6 +18,7 @@ using std::reverse;
 
 class Solver {
     public:
+    int callstopath;
     const int dx[4] = {01, 00, -1, 00};
     const int dy[4] = {00, 01, 00, -1};
     vector<pair<int, int>> solution;

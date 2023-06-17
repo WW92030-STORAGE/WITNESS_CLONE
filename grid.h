@@ -49,6 +49,8 @@ class Grid {
     bool ver(int sx, int sy);
     
     bool check();
+    
+    bool validateRegion(int sx, int sy, vector<pair<int, int>> ban);
 };
 
 #endif

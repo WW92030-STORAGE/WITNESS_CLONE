@@ -80,7 +80,7 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
             }
             s = s + "\n";
         }
-        return s;
+        return s.substr(0, s.length() - 1);
     }
     
     void Grid::disp() {
@@ -100,10 +100,10 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
         // The algorithm works in four stages: THE FOX / THE WOLF / THE DRUDE / THE PHOENIX
         
         // The first section denoted THE FOX begins by handling the more trivial matters.
-        // Just as foxes are easily recognizable, the tasks for this section are relatively self-explanatory and easy to check.
+        // Just as foxes are easily recognizable (and a common Fursona species), the tasks for this section are relatively self-explanatory and easy to check.
         // Namely, whether the path goes from a start to an end, whether all dots are covered, and whether triangles are solved.
         // Violations do not automatically return False. Instead, the locations of violated symbols are put into a set.
-        // This is arguably the most important section because it establishes the trajectory of the path.
+        // However, this is arguably the most important section because it establishes the trajectory of the path.
         
         const int dx[4] = {01, 00, -1, 00};
         const int dy[4] = {00, 01, 00, -1};
@@ -166,7 +166,7 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
         
         // In the same way that wolves are largely territorial animals...
         // The second section denoted THE WOLF ensures that colors and territories are properly partitioned.
-        // Namely, the blobs and the stars. Blobs cannot exist with any other color (except NIL)
+        // Namely, the blobs and the stars. Blobs cannot exist with any other color blob.
         // And stars, while they can exist with other colors, must exist with exactly one other of their color.
         // Although dots can be set as color, they do not affect the results.
         // When we traverse this time, the dx/dy effect is doubled.
@@ -197,8 +197,10 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
                 
                 Object* cur = board[now.first][now.second];
                 
+                if (instanceof<Blob>(cur)) {
                 if (ding.find(cur->color) == ding.end()) ding.insert({cur->color, vector<Object*>()});
                 (*(ding.find(cur->color))).second.push_back(cur);
+                }
                 
                 if (instanceof<Blob>(cur)) {
                     collected.insert(now);
@@ -492,4 +494,74 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
     
     bool Grid::check() {
         return ver(begin.first, begin.second);
+    }
+    
+    // This function serves as a basic pruning system for the solver.
+    // validateRegion only checks for trivial things: blobs, triangles, dots.
+    // Cancels make this always return true.
+    // Obviously this is not the complete algorithm but merely a small thing to prune.
+    // If the path reaches a wall and it can go both ways, and if both regions fail this test...
+    // Then we prune.
+    
+    bool Grid::validateRegion(int sx, int sy, vector<pair<int, int>> ban) {
+        set<pair<int, int>> banned;
+        for (auto i : ban) banned.insert(i);
+        
+        const int dx[4] = {01, 00, -1, 00};
+        const int dy[4] = {00, 01, 00, -1};
+        
+        set<pair<int, int>> blobs;
+        set<pair<int, int>> triangles;
+        set<pair<int, int>> dots;
+        set<pair<int, int>> cancels;
+        
+        set<pair<int, int>> vis;
+        queue<pair<int, int>> q;
+        q.push({sx, sy});
+        
+        while (q.size() > 0) {
+            pair<int, int> now = q.front();
+            q.pop();
+            
+            vis.insert(now);
+            Object* o = board[now.first][now.second];
+            
+            if (instanceof<Blob>(o)) blobs.insert(now);
+            if (instanceof<Triangle>(o)) triangles.insert(now);
+            if (instanceof<Dot>(o)) dots.insert(now);
+            if (instanceof<Cancel>(o)) return true;
+            
+            for (int i = 0; i < 4; i++) {
+                pair<int, int> next = {now.first + dx[i], now.second + dy[i]};
+                if (!inside(next)) continue;
+                Object* hit = board[next.first][next.second];
+                if (hit->isPathOccupied) continue;
+                if (banned.find(next) != banned.end()) continue;
+                if (vis.find(next) != vis.end()) continue;
+                vis.insert(next);
+                q.push(next);
+            }
+        }
+        
+        set<Color> colors;
+        for (auto i : blobs) colors.insert(board[i.first][i.second]->color);
+        if (colors.size() > 1) return false;
+        
+        for (auto i : dots) if (!board[i.first][i.second]->isPathOccupied && banned.find(i) != banned.end()) return false;
+        
+        for (auto i : triangles) {
+            Object* o = board[i.first][i.second];
+            if (!instanceof<Triangle>(o)) continue;
+            int target = (dynamic_cast<Triangle*>(o))->x;
+            
+            int cnt = 0;
+            for (int d = 0; d < 4; d++) {
+                pair<int, int> sus = {i.first + dx[d], i.second + dy[d]};
+                if (!inside(sus)) continue;
+                if (board[sus.first][sus.second]->isPathOccupied || banned.find(sus) != banned.end()) cnt++;
+            }
+            if (cnt != target) return false;
+        }
+        
+        return true;
     }
