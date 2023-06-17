@@ -13,7 +13,7 @@ class Endpoint : public Object {
 class Dot : public Object {
     public:
     Dot() : Object() {
-        
+        isPath = true;
     }
 };
 
