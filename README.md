@@ -33,4 +33,6 @@ All points with both coordinates odd cannot have paths and must be empty or cont
 
 # TO DO
 
-Implement (or find) a more efficient algorithm for Polynomino region checker.
+- Implement (or find) a more efficient algorithm for Polynomino region checker. <br/>
+- Implement subtractive blocks.
+- Create a random puzzle generator (most likely based on a certain Challenge).
