@@ -26,6 +26,11 @@ The Path must begin at a Starting Point (rendered as a circle) and end at an End
 【TRIANGLES】- The number of triangles denotes the number of sides of the Cell the symbol lies in that must be traversed by the Path.<br/>
 【CANCELLATION】- A Region containing N cancellations must contain exactly N symbols that would render the solution invalid otherwise. Cancellations cannot nullify each other. Dots are considered symbols if they lie inside the same Region as a cancellation.
 
+# INTERNAL REPRESENTATION
+
+The grid is internally represented as a (2n + 1) ⋅ (2m + 1) array, where the grid cells are n rows and m columns. <br/>
+All points with both coordinates odd cannot have paths and must be empty or contain symbols instead.
+
 # TO DO
 
 Implement (or find) a more efficient algorithm for Polynomino region checker.
