@@ -123,3 +123,16 @@ Solver::Solver() {
         cout << to_string() << endl;
         cout << callstopath << " CALLS TO PATH\n\n";
     }
+    
+    void Solver::activate() {
+      for (auto i : grid.board) {
+        for (auto j : i) j->isPathOccupied = false;
+      }
+      for (auto i : solution) grid.board[i.first][i.second]->isPathOccupied = true;
+    }
+
+    void Solver::deactivate() {
+      for (auto i : grid.board) {
+        for (auto j : i) j->isPathOccupied = false;
+      }
+    }

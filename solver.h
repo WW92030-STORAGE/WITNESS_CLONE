@@ -41,6 +41,10 @@ class Solver {
     string to_string();
     
     void disp();
+    
+    void activate();
+    
+    void deactivate();
 };
 
 
