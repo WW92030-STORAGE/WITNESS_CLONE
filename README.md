@@ -10,7 +10,7 @@
 - Verification of a given path. As this is an interface there is no custom input system implemented.
 - Grid solver - Automatically solves puzzle grids. Be warned that the current algorithm takes a long time to solve boards (grid cells) larger than 4x4.
 
-# DEFINIITIONS【SPOILERS】
+# DEFINITIONS【SPOILERS】
 
 - The grid is composed of Lines and enclosed Cells.
 - The solution line/curve is denoted as the Path. The Path will partition the grid into one or more Regions.
