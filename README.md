@@ -1,21 +1,21 @@
 # WITNESS_CLONE
-Clone of The Witness by Thekla Inc. as a portable interface. <br/>
-This repo attempts to add as much of the puzzle mechanics as possible. <br/>
+- Clone of The Witness by Thekla Inc. as a portable interface. <br/>
+- This repo attempts to add as much of the puzzle mechanics as possible. <br/>
 
-This is currently a work in progress.
+- This is currently a work in progress.
 
 # FEATURES
-Polynomino region checker (supports fixed and arbitrary rotations but not subtractive regions). <br/>
-Hexagon dots + colored blobs + triangles + stars + cancellations.<br/>
-Verification of a given path. No custom inputs yet sorry... <br/>
-Grid solver - Automatically solves puzzle grids. Be warned that the current algorithm takes a long time to solve boards (grid cells) larger than 4x4.
+- Polynomino region checker (supports fixed and arbitrary rotations but not subtractive regions). <br/>
+- Hexagon dots + colored blobs + triangles + stars + cancellations.<br/>
+- Verification of a given path. No custom inputs yet sorry... <br/>
+- Grid solver - Automatically solves puzzle grids. Be warned that the current algorithm takes a long time to solve boards (grid cells) larger than 4x4.
 
 # DEFINIITIONS【SPOILERS】
 
-The grid is composed of Lines and enclosed Cells. <br/>
-The solution line/curve is denoted as the Path. The Path will partition the grid into one or more Regions. <br/>
-A Region is a set of grid Cells connected along the cardinal directions such that no two adjacent Cells have the Path as a border.<br/>
-The Path must begin at a Starting Point (rendered as a circle) and end at an End Point (rendered as a rounded protrusion from the grid).
+- The grid is composed of Lines and enclosed Cells. <br/>
+- The solution line/curve is denoted as the Path. The Path will partition the grid into one or more Regions. <br/>
+- A Region is a set of grid Cells connected along the cardinal directions such that no two adjacent Cells have the Path as a border.<br/>
+- The Path must begin at a Starting Point (rendered as a circle) and end at an End Point (rendered as a rounded protrusion from the grid).
 
 # THE RULES【SPOILERS】
 
@@ -28,11 +28,11 @@ The Path must begin at a Starting Point (rendered as a circle) and end at an End
 
 # INTERNAL REPRESENTATION
 
-The grid is internally represented as a (2n + 1) ⋅ (2m + 1) array, where the grid cells are n rows and m columns. <br/>
-All points with both coordinates odd cannot have paths and must be empty or contain symbols instead.
+- The grid is internally represented as a (2n + 1) ⋅ (2m + 1) array, where the grid cells are n rows and m columns. <br/>
+- All points with both coordinates odd cannot have paths and must be empty or contain symbols instead.
 
 # TO DO
 
-- Implement (or find) a more efficient algorithm for Polynomino region checker. <br/>
+- Implement (or find) a more efficient algorithm for Polynomino region checker.
 - Implement subtractive blocks.
 - Create a random puzzle generator (most likely based on a certain Challenge).
