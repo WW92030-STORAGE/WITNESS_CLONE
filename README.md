@@ -36,3 +36,7 @@
 - Implement (or find) a more efficient algorithm for Polynomino region checker.
 - Implement subtractive blocks.
 - Create a random puzzle generator (most likely based on a certain Challenge).
+
+---
+
+![Example!](examples/triangles.jpg?raw=true)
