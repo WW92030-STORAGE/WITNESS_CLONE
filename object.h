@@ -17,6 +17,7 @@ enum Color { // Color is an enum to prevent exploiting loopholes (e.g. 2 similar
     
     ORANGE = 0xFF8000,
     GREY = 0x808080,
+    DARK = 0x404040,
     
     // Furries!
     
