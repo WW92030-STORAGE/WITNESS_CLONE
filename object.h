@@ -35,6 +35,7 @@ class Object {
     
     Object() {
         isPath = false;
+        isPathOccupied = false;
         color = NIL;
     }
     
