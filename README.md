@@ -8,7 +8,7 @@ This is currently a work in progress.
 Polynomino region checker (supports fixed and arbitrary rotations but not subtractive regions). <br/>
 Hexagon dots + colored blobs + triangles + stars + cancellations.<br/>
 Verification of a given path. No custom inputs yet sorry... <br/>
-Grid solver - Automatically solves puzzle grids. Be warned that the current algorithm takes a long time to solve boards larger than 4x4.
+Grid solver - Automatically solves puzzle grids. Be warned that the current algorithm takes a long time to solve boards (grid cells) larger than 4x4.
 
 # DEFINIITIONS【SPOILERS】
 
