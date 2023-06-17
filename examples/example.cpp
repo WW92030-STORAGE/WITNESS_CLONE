@@ -262,8 +262,39 @@ int main()
     sx.solve();
     sx.disp();
     
+    // EXAMPLE IX
+    // See challenge video for puzzle
+    
+    v = vector<vector<Object*>>(9, vector<Object*>(9));
+    for (int i = 0; i < 9; i++) {
+        for (int j = 0; j < 9; j++) {
+          v[i][j] = new Object();
+          if (i % 2 == 0 || j % 2 == 0) v[i][j]->isPath = true;
+        }
+    }
+    
+    v[8][0] = new Endpoint(true);
+    v[0][8] = new Endpoint(false);
+    v[1][1] = new Star(RED);
+    v[3][7] = new Star(RED);
+    v[5][5] = new BlockGroup(1, 0, vector<pii>({{0, 0}, {0, 1}, {-1, 1}}));
+    v[5][7] = new BlockGroup(1, 0, vector<pii>({{0, 0}, {1, 0}, {2, 0}}));
+    
+    v[0][7]->isPath = false;
+    v[1][6]->isPath = false;
+    v[3][2]->isPath = false;
+    v[3][4]->isPath = false;
+    v[5][0]->isPath = false;
+    v[6][5]->isPath = false;
+    v[8][1]->isPath = false;
+    v[8][7]->isPath = false;
+    
+    Grid grid9 = Grid(v);
+    // grid9.defaultGrid();
+    
+    sx.set(grid9);
+    sx.solve();
+    sx.disp();
+    
     return 0;
 }
-
-
-
