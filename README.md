@@ -19,12 +19,12 @@
 
 # THE RULES【SPOILERS】
 
-【HEXAGON DOTS】- The Path must intersect every one. <br/>
-【COLORED BLOBS】- The Region containing the blob cannot have anything of a different color.<br/>
-【COLORED STARS】- The Region containing the star must have exactly one other object of the star's color. Other colors are disregarded.<br/>
-【POLYNOMINOS】- The Region's shape (i.e. the shape of the Cells) must be composed exactly of the Polynominos contained within. No overlaps or excess Cells.<br/>
-【TRIANGLES】- The number of triangles denotes the number of sides of the Cell the symbol lies in that must be traversed by the Path.<br/>
-【CANCELLATION】- A Region containing N cancellations must contain exactly N symbols that would render the solution invalid otherwise. Cancellations cannot nullify each other. Dots are considered symbols if they lie inside the same Region as a cancellation.
+- 【HEXAGON DOTS】- The Path must intersect every one. <br/>
+- 【COLORED BLOBS】- The Region containing the blob cannot have anything of a different color.<br/>
+- 【COLORED STARS】- The Region containing the star must have exactly one other object of the star's color. Other colors are disregarded.<br/>
+- 【POLYNOMINOS】- The Region's shape (i.e. the shape of the Cells) must be composed exactly of the Polynominos contained within. No overlaps or excess Cells.<br/>
+- 【TRIANGLES】- The number of triangles denotes the number of sides of the Cell the symbol lies in that must be traversed by the Path.<br/>
+- 【CANCELLATION】- A Region containing N cancellations must contain exactly N symbols that would render the solution invalid otherwise. Cancellations cannot nullify each other. Dots are considered symbols if they lie inside the same Region as a cancellation.
 
 # INTERNAL REPRESENTATION
 
