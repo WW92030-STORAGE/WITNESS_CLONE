@@ -252,5 +252,11 @@ BlockGroup::BlockGroup(bool orientation, bool subtractive, vector<pair<int, int>
     }
     
     bool BlockGroup::solve(vector<BlockGroup> v) {
+        int diff = n;
+        for (auto i : v) {
+            if (i.sub) diff += i.n;
+            else diff -= i.n;
+        }
+        if (diff != 0) return false;
         return dfsUtil(clone(), v, 0);
     }
