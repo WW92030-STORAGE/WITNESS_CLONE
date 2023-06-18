@@ -9,6 +9,7 @@
 - Hexagon dots + colored blobs + triangles + stars + cancellations
 - Verification of a given path. As this is an interface there is no custom input system implemented.
 - Grid solver - Automatically solves puzzle grids. Be warned that the current algorithm takes a long time to solve boards (grid cells) larger than 4x4.
+- Random puzzle generator - Choose among certain presets.
 
 # DEFINITIONS【SPOILERS】
 
@@ -35,7 +36,7 @@
 
 - Implement (or find) a more efficient algorithm for Polynomino region checker.
 - Implement subtractive blocks.
-- Create a random puzzle generator (most likely based on a certain Challenge).
+- Create (expand) the random puzzle generator (most likely based on a certain Challenge).
 
 ---
 
