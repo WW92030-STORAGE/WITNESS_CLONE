@@ -271,18 +271,15 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         return Grid(v);
     }
 
-    Grid randBlocks(int numPoly, int numBlocks) { // Generates a grid with up to numPoly regions represented as blocks.
-        // Each generated region is a block unless over numBlocks in which it gets separated into ceil(size / numBlocks) blocks (individual blocks can have more than numBlocks cells).
-        // Even with numPoly() the upper bound is gridRegions.size() / 2 as a safety measure.
+    Grid randBlocks(int numBlocks) { // Generates a grid with a single region partitioned into blocks.
+        // The number of subregions scales with the size of the chosen region.
         
-        int chosenPath = randint(possiblePaths.size());
-        set<pair<int, int>> path = possiblePaths[chosenPath];
-        getRegions(path);
-        
-        while (gridRegions.size() < numPoly) { // At most 2 blocks per region
+        while (true) { // At most 2 blocks per region
             pathfind();
-            path = possiblePaths[randint(possiblePaths.size())];
+            set<pair<int, int>> path = possiblePaths[randint(possiblePaths.size())];
             getRegions(path);
+
+            if (gridRegions.size() > 2) break;
         }
         
         vector<vector<Object*>> v(9, vector<Object*>(9));
@@ -316,7 +313,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
             gridpoints.push_back(p);
           }
 
-          int subs = std::ceil((double)(gridpoints.size()) / (double)(numBlocks));
+          int subs = std::ceil((double)(points.size()) / (double)(numBlocks));
 
           vector<vector<pair<int, int>>> subregions(subs, vector<pair<int, int>>()); // List of subregions (inner index), for each region (outer index)
 
@@ -354,18 +351,9 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
           regionCount++;
         }
 
-        vector<bool> bitmask(gridRegions.size(), false);
-        for (int i = 0; i < numPoly && i < gridRegions.size() / 2; i++) bitmask[i] = true;
-        std::random_shuffle(bitmask.begin(), bitmask.end());
+        int i = randint(groupies.size());
+        for (auto p : groupies[i]) v[p.first.first][p.first.second] = p.second;
 
-        for (auto i : bitmask) cout << i << " ";
-        cout << endl;
-
-        for (int i = 0; i < gridRegions.size(); i++) {
-          if (!bitmask[i]) continue;
-          for (auto p : groupies[i]) v[p.first.first][p.first.second] = p.second;
-        }
-        
         Grid grid = Grid(v);
         grid.defaultGrid();
         return grid;
