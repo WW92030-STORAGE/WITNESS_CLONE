@@ -295,82 +295,83 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         vector<pair<int, int>> gridpoints; // Points in a region, in raw
         set<pair<int, int>> things; // multipurpose set
         vector<pair<int, int>> thingsvec; // multipurpose vector
+        vector<int> intvec; // multipurpose int vector
 
-        vector<vector<pair<pair<int, int>, BlockGroup*>>> groupies(gridRegions.size(), vector<pair<pair<int, int>, BlockGroup*>>()); // List of blocks and their placements (inner index) by region (outer index)
+        vector<vector<pair<int, int>>> subregions; // Subregions for the a region
+        vector<pair<pair<int, int>, BlockGroup*>> groupies; // List of blocks and their placements for the region
 
         // For now every region is a block
 
-        int regionCount = 0;
+        int mu = 0;
+
         for (auto region : gridRegions) {
-          points.clear();
-          gridpoints.clear();
-          things.clear();
-          thingsvec.clear();
+          int size = 0;
           for (auto p : region) {
             if (p.first % 2 == 0 || p.second % 2 == 0) continue;
-            pair<int, int> thing = make_pair(p.first>>1, p.second>>1);
-            points.push_back(thing);
-            gridpoints.push_back(p);
+            size++;
           }
-
-          int subs = std::ceil((double)(points.size()) / (double)(numBlocks));
-
-          vector<vector<pair<int, int>>> subregions(subs, vector<pair<int, int>>()); // List of subregions (inner index), for each region (outer index)
-
-          while (things.size() < subs) {
-            things.insert(points[randint(points.size())]);
-          }
-
-          for (auto i : things) thingsvec.push_back(i);
-
-          for (auto point : points) {
-            int mindist = INT_MAX;
-            int minindex = 0;
-            for (int i = 0; i < thingsvec.size(); i++) {
-              int mandist = abs(point.first - thingsvec[i].first) + abs(point.second - thingsvec[i].second);
-              if (mandist < mindist) {
-                mindist = mandist;
-                minindex = i;
-              }
-            }
-
-            subregions[minindex].push_back(point);
-          }
-
-          things.clear();
-          thingsvec.clear();
-          while (things.size() < subs) {
-            things.insert(gridpoints[randint(gridpoints.size())]);
-          }
-          for (auto i : things) thingsvec.push_back(i);
-
-          int thesize = std::min(thingsvec.size(), subregions.size());
-
-          for (int i = 0; i < thesize; i++) groupies[regionCount].push_back({thingsvec[i], new BlockGroup(randint(4) == 0 ? 0 : 1, 0, subregions[i])});
-
-          regionCount++;
+          intvec.push_back(size);
+          mu += size;
         }
 
-        int mu = 0;
-        for (auto i : groupies) {
-          for (auto p : i) mu += p.second->n;
-        }
+        mu /= gridRegions.size();
 
-        mu /= groupies.size();
-
-        cout << "MEAN REGION SIZE " << mu << endl;
-
-        int i = randint(groupies.size());
+        int regi = 0;
         while (true) {
-          i = randint(groupies.size());
-          int sizecount = 0;
-          for (auto p : groupies[i]) sizecount += p.second->n;
-          if (sizecount >= mu) {
-            cout << " = " << i << " " << sizecount << endl;
-            break;
-          }
+          regi = randint(gridRegions.size());
+          if (intvec[regi] > mu) break;
         }
-        for (auto p : groupies[i]) v[p.first.first][p.first.second] = p.second;
+
+        set<pair<int, int>> region = gridRegions[regi];
+        for (auto p : region) {
+          if (p.first % 2 == 0 || p.second % 2 == 0) continue;
+          points.push_back({p.first / 2, p.second / 2});
+          gridpoints.push_back(p); 
+        }
+
+        for (auto i : gridpoints) cout << "[" << i.first << " " << i.second << "] ";
+        cout << endl;
+
+        int subs = std::ceil((double)(gridpoints.size()) / (double)(numBlocks));
+        while (things.size() < subs) things.insert(gridpoints[randint(gridpoints.size())]);
+
+        for (auto i : things) thingsvec.push_back(i);
+        subregions = vector<vector<pair<int, int>>>(subs, vector<pair<int, int>>());
+
+        for (auto i : thingsvec) cout << "<" << i.first << " " << i.second << "> ";
+        cout << endl;
+
+        for (auto p : gridpoints) {
+          int mind = INT_MAX;
+          int mini = 0;
+          for (int i = 0; i < thingsvec.size(); i++) {
+            int dist = abs(thingsvec[i].first - p.first) + abs(thingsvec[i].second - p.second);
+            if (dist < mind) {
+              mind = dist;
+              mini = i;
+            }
+          }
+          subregions[mini].push_back({p.second / 2, -1 * p.first / 2}); // whaa...?
+        }
+
+        for (auto i : subregions) {
+          for (auto j : i) cout << "|" << j.first << " " << j.second << "| ";
+          cout << endl;
+        }
+
+        things.clear();
+        while (things.size() < subs) things.insert(gridpoints[randint(gridpoints.size())]);
+        thingsvec.clear();
+        for (auto i : things) thingsvec.push_back(i);
+
+        std::random_shuffle(thingsvec.begin(), thingsvec.end());
+
+        subs = std::min(subs, (int)(thingsvec.size()));
+        for (int i = 0; i < subs; i++) {
+          BlockGroup* nbg = new BlockGroup(randint(4) == 0 ? 0 : 1, 0, subregions[i]);
+          nbg->normalize();
+          v[thingsvec[i].first][thingsvec[i].second] = nbg;
+        }
 
         Grid grid = Grid(v);
         grid.defaultGrid();
