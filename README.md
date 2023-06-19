@@ -32,7 +32,7 @@
 - The grid is internally represented as a (2n + 1) ⋅ (2m + 1) array, where the grid cells are n rows and m columns.
 - All points with both coordinates odd cannot have paths and must be empty or contain symbols instead.
 
-# TO DO
+# TO DO【IN NO PARTICULAR ORDER】
 
 - Implement (or find) a more efficient algorithm for Polynomino region checker.
 - Implement subtractive blocks.
