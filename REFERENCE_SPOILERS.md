@@ -1,5 +1,5 @@
 # REFERENCE DOCUMENT - CONTAINS SPOILERS!!!!
-![SPOILER WARNING](blobs.jpg)
+![SPOILER WARNING](examples/blobs.jpg)
 ---
 
 # 0. NOTATION
