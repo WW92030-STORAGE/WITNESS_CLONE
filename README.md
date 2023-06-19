@@ -3,6 +3,7 @@
 - This repo attempts to add as much of the puzzle mechanics as possible.
   <br/>
 - This is currently a work in progress.
+- **THIS REPOSITORY MIGHT CONTAIN SPOILERS FOR THE WITNESS.**
 
 # FEATURES
 - Polynomino region checker (supports fixed and arbitrary rotations but not subtractive regions).
@@ -11,14 +12,14 @@
 - Grid solver - Automatically solves puzzle grids. Be warned that the current algorithm takes a long time to solve boards (grid cells) larger than 4x4.
 - Random puzzle generator - Choose among certain presets.
 
-# DEFINITIONS【SPOILERS】
+# DEFINITIONS
 
 - The grid is composed of Lines and enclosed Cells.
 - The solution line/curve is denoted as the Path. The Path will partition the grid into one or more Regions.
 - A Region is a set of grid Cells connected along the cardinal directions such that no two adjacent Cells have the Path as a border.
 - The Path must begin at a Starting Point (rendered as a circle) and end at an End Point (rendered as a rounded protrusion from the grid).
 
-# THE RULES【SPOILERS】
+# THE RULES
 
 - 【HEXAGON DOTS】- The Path must intersect every one.
 - 【COLORED BLOBS】- The Region containing the blob cannot have anything of a different color.
