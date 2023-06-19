@@ -271,15 +271,15 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         return Grid(v);
     }
 
-    Grid randBlocks(int numPoly, int numBlocks) { // Generates a grid with up to numPoly blocks. 
+    Grid randBlocks(int numPoly, int numBlocks) { // Generates a grid with up to numPoly regions represented as blocks.
         // Each generated region is a block unless over numBlocks in which it gets separated into ceil(size / numBlocks) blocks (individual blocks can have more than numBlocks cells).
-        numBlocks = std::min(numBlocks, 3);
+        // Even with numPoly() the upper bound is gridRegions.size() / 2 as a safety measure.
         
         int chosenPath = randint(possiblePaths.size());
         set<pair<int, int>> path = possiblePaths[chosenPath];
         getRegions(path);
         
-        while (gridRegions.size() < numBlocks) { // At most 2 blocks per region
+        while (gridRegions.size() < numPoly) { // At most 2 blocks per region
             pathfind();
             path = possiblePaths[randint(possiblePaths.size())];
             getRegions(path);
@@ -299,10 +299,11 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         set<pair<int, int>> things; // multipurpose set
         vector<pair<int, int>> thingsvec; // multipurpose vector
 
-        vector<pair<pair<int, int>, BlockGroup*>> groupies;
+        vector<vector<pair<pair<int, int>, BlockGroup*>>> groupies(gridRegions.size(), vector<pair<pair<int, int>, BlockGroup*>>()); // List of blocks and their placements (inner index) by region (outer index)
 
         // For now every region is a block
 
+        int regionCount = 0;
         for (auto region : gridRegions) {
           points.clear();
           gridpoints.clear();
@@ -317,7 +318,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
 
           int subs = std::ceil((double)(gridpoints.size()) / (double)(numBlocks));
 
-          vector<vector<pair<int, int>>> subregions(subs, vector<pair<int, int>>());
+          vector<vector<pair<int, int>>> subregions(subs, vector<pair<int, int>>()); // List of subregions (inner index), for each region (outer index)
 
           while (things.size() < subs) {
             things.insert(points[randint(points.size())]);
@@ -348,19 +349,21 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
 
           int thesize = std::min(thingsvec.size(), subregions.size());
 
-          for (int i = 0; i < thesize; i++) groupies.push_back({thingsvec[i], new BlockGroup(randint(4) == 0 ? 0 : 1, 0, subregions[i])});
+          for (int i = 0; i < thesize; i++) groupies[regionCount].push_back({thingsvec[i], new BlockGroup(randint(4) == 0 ? 0 : 1, 0, subregions[i])});
+
+          regionCount++;
         }
 
-        vector<bool> bitmask(groupies.size(), false);
-        for (int i = 0; i < numPoly; i++) bitmask[i] = true;
+        vector<bool> bitmask(gridRegions.size(), false);
+        for (int i = 0; i < numPoly && i < gridRegions.size() / 2; i++) bitmask[i] = true;
         std::random_shuffle(bitmask.begin(), bitmask.end());
 
         for (auto i : bitmask) cout << i << " ";
         cout << endl;
 
-        for (int i = 0; i < groupies.size(); i++) {
+        for (int i = 0; i < gridRegions.size(); i++) {
           if (!bitmask[i]) continue;
-          v[groupies[i].first.first][groupies[i].first.second] = groupies[i].second;
+          for (auto p : groupies[i]) v[p.first.first][p.first.second] = p.second;
         }
         
         Grid grid = Grid(v);
