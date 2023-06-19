@@ -340,7 +340,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
           things.clear();
           thingsvec.clear();
           while (things.size() < subs) {
-            things.insert(gridpoints[randint(points.size())]);
+            things.insert(gridpoints[randint(gridpoints.size())]);
           }
           for (auto i : things) thingsvec.push_back(i);
 
@@ -351,7 +351,25 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
           regionCount++;
         }
 
+        int mu = 0;
+        for (auto i : groupies) {
+          for (auto p : i) mu += p.second->n;
+        }
+
+        mu /= groupies.size();
+
+        cout << "MEAN REGION SIZE " << mu << endl;
+
         int i = randint(groupies.size());
+        while (true) {
+          i = randint(groupies.size());
+          int sizecount = 0;
+          for (auto p : groupies[i]) sizecount += p.second->n;
+          if (sizecount >= mu) {
+            cout << " = " << i << " " << sizecount << endl;
+            break;
+          }
+        }
         for (auto p : groupies[i]) v[p.first.first][p.first.second] = p.second;
 
         Grid grid = Grid(v);
