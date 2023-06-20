@@ -368,7 +368,9 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
 
         subs = std::min(subs, (int)(thingsvec.size()));
         for (int i = 0; i < subs; i++) {
-          BlockGroup* nbg = new BlockGroup(randint(4) == 0 ? 0 : 1, 0, subregions[i]);
+          bool theDecidingFactor = randint(4) != 0; // Fixed orientation?
+          BlockGroup* nbg = new BlockGroup(theDecidingFactor, 0, subregions[i]);
+          if (!theDecidingFactor) nbg->rotate(randint(4));
           nbg->normalize();
           v[thingsvec[i].first][thingsvec[i].second] = nbg;
         }
