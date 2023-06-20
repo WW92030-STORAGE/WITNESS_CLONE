@@ -24,7 +24,7 @@
 - 【HEXAGON DOTS】- The Path must intersect every one.
 - 【COLORED BLOBS】- The Region containing the blob cannot have anything of a different color.
 - 【COLORED STARS】- The Region containing the star must have exactly one other object of the star's color. Other colors are disregarded.
-- 【POLYNOMINOS】- The Region's shape (i.e. the shape of the Cells) must be composed exactly of the Polynominos contained within. No overlaps or excess Cells.
+- 【POLYOMINOS】- The Region's shape (i.e. the shape of the Cells) must be composed exactly of the Polyominos contained within. No overlaps or excess Cells.
 - 【TRIANGLES】- The number of triangles denotes the number of sides of the Cell the symbol lies in that must be traversed by the Path.
 - 【CANCELLATION】- A Region containing N cancellations must contain exactly N symbols that would render the solution invalid otherwise. Cancellations cannot nullify each other. Dots are considered symbols if they lie inside the same Region as a cancellation.
 
@@ -35,7 +35,7 @@
 
 # TO DO【IN NO PARTICULAR ORDER】
 
-- Implement (or find) a more efficient algorithm for Polynomino region checker.
+- Implement (or find) a more efficient algorithm for Polyomino region checker.
 - Implement subtractive blocks.
 - Make the random puzzle generator more customizable.
 ---
