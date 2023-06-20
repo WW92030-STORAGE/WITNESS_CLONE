@@ -8,7 +8,7 @@
 # FEATURES
 - Polynomino region checker (supports fixed and arbitrary rotations but not subtractive regions).
 - Hexagon dots + colored blobs + triangles + stars + cancellations
-- Verification of a given path. As this is an interface there is no custom input system implemented.
+- Verification of a given path - As this is an interface there is no custom input system implemented.
 - Grid solver - Automatically solves puzzle grids. Be warned that the current algorithm takes a long time to solve boards (grid cells) larger than 4x4.
 - Random puzzle generator - Choose among certain presets.
 
