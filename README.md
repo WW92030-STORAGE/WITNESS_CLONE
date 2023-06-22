@@ -3,6 +3,7 @@
 - This repo attempts to add as much of the puzzle mechanics as possible.
   <br/>
 - This is currently a work in progress.
+- But one thing will remain certain: this is an interface. If you wish to attach this to some graphical display you will have to figure that out yourself.
 - **THIS REPOSITORY CONTAINS SPOILERS FOR THE WITNESS.**
 
 # FEATURES
