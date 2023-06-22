@@ -270,6 +270,52 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         
         return Grid(v);
     }
+    
+    Grid randDots(int numDots, int numCuts) { // Generates a grid with up to numDots dots and numCuts cuts
+        set<pair<int, int>> path = possiblePaths[randint(possiblePaths.size())];
+        
+        vector<vector<Object*>> v(9, vector<Object*>(9));
+        
+        for (int i = 0; i < 9; i++) {
+            for (int j = 0; j < 9; j++) {
+                v[i][j] = new Object();
+                if (i % 2 == 0 || j % 2 == 0) v[i][j]->isPath = true;
+            }
+        }
+        
+        set<pair<int, int>> things;
+        
+        int count = 0;
+        while (things.size() < numCuts && count < (1<<16)) {
+            int x = randint(9);
+            int y = randint(9);
+            if (path.find({x, y}) != path.end()) continue;
+            if ((x % 2 == 0) ^ (y % 2 == 0)) things.insert({x, y});
+            count++;
+        }
+        
+        for (auto i : things) v[i.first][i.second]->isPath = false;
+        
+        v[start.first][start.second] = new Endpoint(true);
+        v[end.first][end.second] = new Endpoint(false);
+
+        vector<pair<int, int>> pathvec;
+        for (auto i : path) pathvec.push_back(i);
+
+        count = 0;
+        things.clear();
+        while (things.size() < numDots && count < (1<<16)) {
+          count++;
+          pair<int, int> point = pathvec[randint(pathvec.size())];
+          if (start == point || end == point) continue;
+          things.insert(point);
+        }
+
+        for (auto i : things) v[i.first][i.second] = new Dot();
+
+        // Return the grid
+        return Grid(v);
+    }
 
     Grid randBlocks(int numBlocks) { // Generates a grid with a single region partitioned into blocks.
         // The number of subregions scales with the size of the chosen region.
