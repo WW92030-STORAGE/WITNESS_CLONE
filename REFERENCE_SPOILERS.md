@@ -10,7 +10,7 @@
 
 - The Witness contains 523 campaign puzzles (i.e. panel-like) split across 17 zones.
 - 11 of the zones contain lasers that can be activated and pointed to the mountain. One laser does not initially go that way, and must be rotated somewhere else.
-- Among the 523 panels are 6 vault access puzzles (that correspond to 6 videos in the theater) and 14 discarded panels.
+- Among the 523 panels are 5 + 14 vault access puzzles (that correspond to 6 videos in the theater) and 14 discarded panels.
 - There are also 135 environmental puzzles (puzzle shapes that appear in the environment but are nevertheless traceable) which are partitioned into six regions.
 
 # II. THE CHALLENGE
