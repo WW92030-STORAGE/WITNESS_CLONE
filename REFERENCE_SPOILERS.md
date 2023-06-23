@@ -4,7 +4,7 @@
 
 # 0. NOTATION
 
-- Puzzle dimensions are in terms of grid cells. So a 3x3 puzzle has 4 vertical lines and 4 horizontal lines, with 9 grid cells inside.
+- Puzzle dimensions are in terms of symbol cells (grid cells that can hold symbols such as Blobs). So a 3x3 puzzle has 4 vertical lines and 4 horizontal lines, with 9 symbol cells inside.
 
 # I. THE WITNESS
 
