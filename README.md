@@ -7,6 +7,7 @@
 - **THIS REPOSITORY CONTAINS SPOILERS FOR THE WITNESS.**
 
 # FEATURES
+
 - Polynomino region checker (supports fixed and arbitrary rotations but not subtractive regions).
 - Hexagon dots + colored blobs + triangles + stars + cancellations
 - Verification of a given path - As this is an interface there is no custom input system implemented.
@@ -33,6 +34,10 @@
 
 - The grid is internally represented as a (2n + 1) ⋅ (2m + 1) array, where the grid cells are n rows and m columns.
 - All points with both coordinates odd cannot have paths and must be empty or contain symbols instead.
+
+# IMPORTANT
+
+- YOU MUST CREDIT ME (WW92030-STORAGE/WW92030/NORMALEXISTING) WHENEVER YOU USE THIS CODE.
 
 # TO DO【IN NO PARTICULAR ORDER】
 
