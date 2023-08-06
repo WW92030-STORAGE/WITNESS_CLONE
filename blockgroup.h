@@ -8,6 +8,7 @@
 #include <climits>
 
 #include "object.h"
+#include "cover.h"
 
 using std::set;
 using std::pair;
@@ -26,6 +27,12 @@ class BlockGroup : public Object {
     pair<int, int> boundingbox;
     
     const pair<int, int> NIL = {INT_MIN, INT_MIN};
+    
+    // DLX
+    
+    DLX dlx;
+    
+    // Constructors
     
     BlockGroup(bool orientation, bool subtractive, vector<pair<int, int>> v, Color c);
     
@@ -63,19 +70,11 @@ class BlockGroup : public Object {
     
     // Region testing
     
-    bool containsbb(BlockGroup b);
-    
     bool directoverlay(BlockGroup b);
     
-    vector<pair<int, int>> fixedoverlay(BlockGroup b);
+    vector<vector<bool>> generateMatrix(vector<BlockGroup>& blocks);
     
-    vector<vector<pair<int, int>>> overlay(BlockGroup b);
-    
-    // Now for the real thing
-    
-    bool dfsUtil(BlockGroup region, vector<BlockGroup>& v, int index);
-    
-    bool solve(vector<BlockGroup> v);
+    bool solve(vector<BlockGroup>& blocks);
 };
 
 #endif
