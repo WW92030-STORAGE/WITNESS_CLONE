@@ -17,6 +17,9 @@
     }
 
     void DLX::translate(std::vector<std::vector<bool>>& mat2) {
+        list.clear();
+        sol.clear();
+        hiddenCols.clear();
         n = mat2.size();
         m = mat2[0].size();
         
