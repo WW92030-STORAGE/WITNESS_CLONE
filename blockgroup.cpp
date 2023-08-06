@@ -1,9 +1,11 @@
 #include "blockgroup.h"
+#include "cover.h"
 
 #include <set>
 #include <iostream>
 #include <vector>
 #include <string>
+#include <map>
 
 using std::set;
 using std::cout;
@@ -156,12 +158,6 @@ BlockGroup::BlockGroup(bool orientation, bool subtractive, vector<pair<int, int>
     
     // Region testing
     
-    bool BlockGroup::containsbb(BlockGroup b) { // Can the bounding box contain that belonging to region b?
-        if (boundingbox.first < b.boundingbox.first) return false;
-        if (boundingbox.second < b.boundingbox.second) return false;
-        return true;
-    }
-    
     bool BlockGroup::directoverlay(BlockGroup b) { // Does this region contain region b in terms of absolute coordinates?
     if (n < b.n) return false;
         for (pair<int, int> p : b.pairs) {
@@ -170,93 +166,60 @@ BlockGroup::BlockGroup(bool orientation, bool subtractive, vector<pair<int, int>
         return true;
     }
     
-    vector<pair<int, int>> BlockGroup::fixedoverlay(BlockGroup b) { // Does this region contain region b? Return the offset if yes, INT_MIN if no.
-        // This only affects one rotation.
-        if (n < b.n) return vector<pair<int, int>>();
-        // the starting offset is the absolute difference in bounding boxes
-        // the ending offset is the width of the smaller bounding box in the larger one
+    vector<vector<bool>> BlockGroup::generateMatrix(vector<BlockGroup>& blocks) { // Translates a region and polys into a matrix
+        normalize();
+        for (int i = 0; i < blocks.size(); i++) blocks[i].normalize();
         
-        int dx = bottomleft.first - b.bottomleft.first;
-        int dy = bottomleft.second - b.bottomleft.second;
+        vector<vector<bool>> res;
         
-        BlockGroup test = b.clone();
-        test.move({dx, dy});
+        std::map<pair<int, int>, int> regionIndex;
         
-        // cout << "MOVED " << endl;
-        // disp();
-        // test.disp();
+        for (auto p : pairs) regionIndex.insert({p, regionIndex.size()});
         
-        int width = abs(boundingbox.first - b.boundingbox.first);
-        int height = abs(boundingbox.second - b.boundingbox.second);
+        int drudes = blocks.size();
+        int regsz = max((int)regionIndex.size(), n);
+        if (regionIndex.size() != n) {
+            for (int i = 0; i < 1024; i++) cout << "BAD REGION CALCS!!!";
+        }
         
-        vector<pair<int, int>> res;
-        // cout << "EFFECTIVE BOX " << width << " " << height << endl;
-        for (int i = 0; i <= width; i++) {
-            for (int j = 0; j <= height; j++) {
-                // test.disp();
-                if (directoverlay(test)) res.push_back({i, j});
-                test.move({0, 1});
+        vector<bool> row;
+        
+        for (int index = 0; index < blocks.size(); index++) {
+            BlockGroup block = blocks[index].clone();
+            
+            for (int rot = 0; rot < ((block.oriented) ? 1 : 4); rot++) {
+            
+            for (int x = bottomleft.first; x <= topright.first; x++) {
+                for (int y = bottomleft.second; y <= topright.second; y++) {
+                    row = vector<bool> (drudes + regsz, false);
+                    row[index] = true; // Index of the block in question
+                    
+                    block.move({x, y});
+                    if (directoverlay(block)) {
+                        for (auto p : block.pairs) {
+                            int posindex = (regionIndex.find(p) != regionIndex.end()) ? regionIndex.at(p) : 0;
+                            row[drudes + posindex] = true;
+                        }
+                        res.push_back(row);
+                    }
+                    
+                    
+                    
+                    block.normalize();
+                }
             }
             
-            test.move({1, -1 * height - 1});
-        }
-        
-        return res;
-    }
-    
-    vector<vector<pair<int, int>>> BlockGroup::overlay(BlockGroup b) {
-        vector<vector<pair<int, int>>> res(4, vector<pair<int, int>>());
-        res[0] = fixedoverlay(b);
-        if (!b.oriented) {
-            BlockGroup test = b.clone();
-            test.normalize();
-            for (int i = 0; i < 3; i++) {
-                test.rotate(1);
-                test.normalize();
-                res[i + 1] = (fixedoverlay(test));
+            block.rotate(1);
+            
             }
         }
         
         return res;
     }
     
-    // Now for the real thing
-    
-    bool BlockGroup::dfsUtil(BlockGroup region, vector<BlockGroup>& v, int index) {
-        // cout << index << " ";
-        // region.disp();
-        if (index >= v.size()) return region.n == 0;
-        
-        BlockGroup group = v[index].clone();
-        group.normalize();
-        vector<vector<pair<int, int>>> options = region.overlay(group);
-        
-        bool res = false;
-        for (int i = 0; i < 4; i++) {
-            group.move(region.bottomleft);
-            for (auto op : options[i]) {
-                group.move(op);
-                region.removeRegion(group);;
-                res |= dfsUtil(region, v, index + 1);
-                if (res) return true;
-                region.addRegion(group);
-                group.invmov(op);
-                
-            }
-            if (group.oriented) break;
-            group.rotate(1);
-            group.normalize();
-        }
-        
-        return res;
-    }
-    
-    bool BlockGroup::solve(vector<BlockGroup> v) {
-        int diff = n;
-        for (auto i : v) {
-            if (i.sub) diff += i.n;
-            else diff -= i.n;
-        }
-        if (diff != 0) return false;
-        return dfsUtil(clone(), v, 0);
+    bool BlockGroup::solve(vector<BlockGroup>& blocks) {
+        vector<vector<bool>> mat = generateMatrix(blocks);
+        if (mat.size() == 0) return false;
+        dlx.translate(mat);
+        return dlx.solve(0);
     }
