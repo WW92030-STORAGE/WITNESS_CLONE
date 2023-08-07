@@ -34,6 +34,7 @@
 
 - The grid is internally represented as a (2n + 1) ⋅ (2m + 1) array, where the grid cells are n rows and m columns.
 - All points with both coordinates odd cannot have paths and must be empty or contain symbols instead.
+- Polyominoes are checked by reducing the region and the constituents into the Exact Cover problem and then using Knuth's DLX algorithm.
 
 # IMPORTANT
 
