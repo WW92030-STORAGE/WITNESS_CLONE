@@ -214,7 +214,7 @@ BlockGroup::BlockGroup(bool orientation, bool subtractive, vector<pair<int, int>
             }
         }
         
-        std::cout << "MATRIX ROWS " << res.size() << "\n";
+        // std::cout << "MATRIX ROWS " << res.size() << "\n";
         
         return res;
     }
