@@ -189,30 +189,32 @@ BlockGroup::BlockGroup(bool orientation, bool subtractive, vector<pair<int, int>
             
             for (int rot = 0; rot < ((block.oriented) ? 1 : 4); rot++) {
             
-            for (int x = bottomleft.first; x <= topright.first; x++) {
-                for (int y = bottomleft.second; y <= topright.second; y++) {
-                    row = vector<bool> (drudes + regsz, false);
-                    row[index] = true; // Index of the block in question
+                for (int x = bottomleft.first - block.boundingbox.first; x <= topright.first + block.boundingbox.first; x++) {
+                    for (int y = bottomleft.second - block.boundingbox.second; y <= topright.second + block.boundingbox.second; y++) {
+                        row = vector<bool> (drudes + regsz, false);
+                        row[index] = true; // Index of the block in question
                     
-                    block.move({x, y});
-                    if (directoverlay(block)) {
-                        for (auto p : block.pairs) {
-                            int posindex = (regionIndex.find(p) != regionIndex.end()) ? regionIndex.at(p) : 0;
-                            row[drudes + posindex] = true;
+                        block.move({x, y});
+                        if (directoverlay(block)) {
+                            for (auto p : block.pairs) {
+                                int posindex = (regionIndex.find(p) != regionIndex.end()) ? regionIndex.at(p) : 0;
+                                row[drudes + posindex] = true;
+                            }
+                            res.push_back(row);
                         }
-                        res.push_back(row);
+                    
+                    
+                    
+                        block.normalize();
                     }
-                    
-                    
-                    
-                    block.normalize();
                 }
-            }
             
-            block.rotate(1);
+                if (!block.oriented) block.rotate(1);
             
             }
         }
+        
+        std::cout << "MATRIX ROWS " << res.size() << "\n";
         
         return res;
     }
