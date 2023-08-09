@@ -37,6 +37,8 @@ class BlockGroup : public Object {
     BlockGroup(bool orientation, bool subtractive, vector<pair<int, int>> v, Color c);
     
     BlockGroup(bool orientation, bool subtractive, vector<pair<int, int>> v);
+
+    void updateBounds();
     
     // Utility Functions
     
