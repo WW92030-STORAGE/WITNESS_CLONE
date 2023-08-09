@@ -56,6 +56,20 @@ BlockGroup::BlockGroup(bool orientation, bool subtractive, vector<pair<int, int>
         
         color = YELLOW;
     }
+
+    void BlockGroup::updateBounds() {
+        bottomleft = {INT_MAX, INT_MAX};
+        topright = {INT_MIN, INT_MIN};
+        
+        for (auto p : pairs) {
+            bottomleft.first = min(bottomleft.first, p.first);
+            bottomleft.second = min(bottomleft.second, p.second);
+            topright.first = max(topright.first, p.first);
+            topright.second = max(topright.second, p.second);
+        }
+            
+        boundingbox = {topright.first - bottomleft.first + 1, topright.second - bottomleft.second + 1};
+    }
     
     // Utility Functions
     
