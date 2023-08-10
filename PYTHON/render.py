@@ -85,7 +85,10 @@ def generateDrude(pos, element, block_spacing, angle):
 
 # Right now bg, line, path are solid colors. Filter is a solid color that dictates the light filter.
 
-def colorize(grid, pos):
+def diminish(color, filter):
+	return ((color[0] * filter[0]) // 255, (color[1] * filter[1]) // 255, (color[2] * filter[2]) // 255)
+
+def colorize(grid, pos, filter):
 	element = grid.get(pos)
 	
 	# print(element, " / ", grid.violations)
@@ -95,9 +98,15 @@ def colorize(grid, pos):
 	if (element.color == Color.NIL):
 		return 0
 	
-	return element.color.value
+	return diminish(element.color.value, filter)
 
-def render(output, puzzle, width = 1024, height = 1024, margin = 96, thickness = 48, bg = 0x808080, line = 0x404040, path = 0xFFFFFF, filter = 0xFFFFFF):
+def render(output, puzzle, width = 1024, height = 1024, margin = 96, thickness = 48, bg = (128, 128, 128), line = (64, 64, 64), path = (255, 255, 255), filter = (255, 255, 255)):
+
+	# Set colors
+	bg = diminish(bg, filter)
+	path = diminish(path, filter)
+	line = diminish(line, filter)
+
 	image = Image.new("RGB", (width, height), bg)
 	
 	# Number of pixels between grid ranks and files (including symbols and paths)
@@ -149,7 +158,19 @@ def render(output, puzzle, width = 1024, height = 1024, margin = 96, thickness =
 				elif (i == len(puzzle.board) - 1 and j == 0):
 					draw.line((xpos - length, ypos + length, xpos, ypos), width=thickness, fill=line, joint="curve")
 					draw.ellipse((xpos - length - rad, ypos + length - rad, xpos - length + rad, ypos + length + rad), fill=line)
-
+				elif (i == 0):
+					draw.line((xpos, ypos - length, xpos, ypos), width=thickness, fill=line, joint="curve")
+					draw.ellipse((xpos - rad, ypos - length - rad, xpos + rad, ypos - length + rad), fill=line)
+				elif (i == len(puzzle.board) - 1):
+					draw.line((xpos, ypos + length, xpos, ypos), width=thickness, fill=line, joint="curve")
+					draw.ellipse((xpos - rad, ypos + length - rad, xpos + rad, ypos + length + rad), fill=line)
+				elif (j == 0):
+					draw.line((xpos - length, ypos, xpos, ypos), width=thickness, fill=line, joint="curve")
+					draw.ellipse((xpos - length - rad, ypos - rad, xpos - length + rad, ypos + rad), fill=line)
+				elif (j == len(puzzle.board[i]) - 1):
+					draw.line((xpos, ypos, xpos + length, ypos), width=thickness, fill=line, joint="curve")
+					draw.ellipse((xpos + length - rad, ypos - rad, xpos + length + rad, ypos + rad), fill=line)
+				
 	# Draw the rounded corners
 
 	for i in range(0, len(puzzle.board), 2):
@@ -176,20 +197,20 @@ def render(output, puzzle, width = 1024, height = 1024, margin = 96, thickness =
 			# Draw dots on the path
 			if (isinstance(element, Dot)):
 				hex = generateHexagon((xpos, ypos), thickness * 0.9)
-				draw.polygon(hex, fill = colorize(puzzle, (i, j)))
+				draw.polygon(hex, fill = colorize(puzzle, (i, j), filter))
 			
 			# Draw blobs
 			if (isinstance(element, Blob)):
 				shape = generateBlob((xpos, ypos), grid_spacing / 4)
 				# print(shape)
-				draw.line(shape, width = int(grid_spacing) // 2, fill = colorize(puzzle, (i, j)), joint="curve")
+				draw.line(shape, width = int(grid_spacing) // 2, fill = colorize(puzzle, (i, j), filter), joint="curve")
 			
 			# Draw stars
 			if (isinstance(element, Star)):
 				shape = generateStar((xpos, ypos), grid_spacing)
 				# print(shape)
-				draw.polygon(shape[0], fill = colorize(puzzle, (i, j)))
-				draw.polygon(shape[1], fill = colorize(puzzle, (i, j)))
+				draw.polygon(shape[0], fill = colorize(puzzle, (i, j), filter))
+				draw.polygon(shape[1], fill = colorize(puzzle, (i, j), filter))
 			
 			# Draw triangles
 
@@ -197,7 +218,7 @@ def render(output, puzzle, width = 1024, height = 1024, margin = 96, thickness =
 				for ii in range(element.x):
 					xpos2 = xpos + (ii + 0.5 - element.x / 2) * (grid_spacing / 2)
 					shape = generateTriangle((xpos2, ypos), grid_spacing / 2)
-					draw.polygon(shape, fill = colorize(puzzle, (i, j)))
+					draw.polygon(shape, fill = colorize(puzzle, (i, j), filter))
 			
 			# Draw blocks
 
@@ -207,16 +228,16 @@ def render(output, puzzle, width = 1024, height = 1024, margin = 96, thickness =
 
 				shape = generateDrude((xpos, ypos), element, grid_spacing / dimension, angle)
 				for s in shape:
-					draw.polygon(s, fill = colorize(puzzle, (i, j)))
+					draw.polygon(s, fill = colorize(puzzle, (i, j), filter))
 
 			# Draw cancels
 
 			if (isinstance(element, Cancel)):
 				crad = grid_spacing / 4
 				linewidth = thickness // 2
-				color = colorize(puzzle, (i, j))
+				color = colorize(puzzle, (i, j), filter)
 				if (element.color == Color.NIL):
-					color = Color.WHITE.value
+					color = filter
 				if (not element.ignored):
 					color = Color.RED.value
 				draw.line((xpos, ypos - crad, xpos, ypos), width = linewidth, fill = color)
