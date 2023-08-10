@@ -59,7 +59,7 @@ def colorize(grid, pos):
 	element = grid.get(pos)
 	
 	# print(element, " / ", grid.violations)
-	if (element in grid.violations):
+	if (element in grid.violations or pos in grid.violations):
 		return Color.RED.value
 
 	if (element.color == Color.NIL):
