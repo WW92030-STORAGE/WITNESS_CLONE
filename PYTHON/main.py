@@ -8,7 +8,7 @@ from render import render
 
 thegroup = BlockGroup(False, False, {(0, 0), (1, 0), (0, 1)})
 
-board = [[Endpoint(True), Dot(), Object(), Object(), Object()], [Object(), Star(Color.BLACK), Object(), thegroup, Object()], [Object(), Object(), Object(), Object(), Object()], [Object(), Blob(Color.WHITE), Object(), Star(Color.BLACK), Object()], [Object(), Object(), Object(), Object(), Endpoint(False)]]
+board = [[Endpoint(True), Dot(), Object(), Object(), Object()], [Object(), Star(Color.BLACK), Object(), thegroup, Object()], [Object(), Object(), Object(), Object(), Object()], [Object(), Triangle(2), Object(), Star(Color.BLACK), Object()], [Object(), Object(), Object(), Object(), Endpoint(False)]]
 
 for i in range(5):
 	for j in range(5):

@@ -18,6 +18,13 @@ def generateHexagon(pos, diameter):
 	
 	return list
 
+def generateTriangle(pos, diameter):
+	list = []
+	for i in range(3):
+		list.append((pos[0] + diameter * 0.5 * math.cos(math.pi * (2 * i / 3 + 1.5)), pos[1] + diameter * 0.5 * math.sin(math.pi * (2 * i / 3 + 1.5))))
+	
+	return list
+
 def generateBlob(pos, diameter):
 	list = []
 	dx = [1, -1, -1, 1]
@@ -153,6 +160,21 @@ def render(output, puzzle, width = 1024, height = 1024, margin = 96, thickness =
 				# print(shape)
 				draw.polygon(shape[0], fill = colorize(puzzle, (i, j)))
 				draw.polygon(shape[1], fill = colorize(puzzle, (i, j)))
+			
+			# Draw triangles
+
+			if (isinstance(element, Triangle)):
+				for ii in range(element.x):
+					xpos2 = xpos + (ii + 0.5 - element.x / 2) * (grid_spacing / 2)
+					shape = generateTriangle((xpos2, ypos), grid_spacing / 2)
+					draw.polygon(shape, fill = colorize(puzzle, (i, j)))
+			
+			# Draw blocks
+
+			if (isinstance(element, BlockGroup)):
+				angle = 0 if element.oriented else -1 * math.pi / 6
+				# TODO
+
 
 			# Draw the path
 			if (element.isPathOccupied):
