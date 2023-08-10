@@ -42,7 +42,6 @@
 
 # TO DO【IN NO PARTICULAR ORDER】
 
-- Implement (or find) a more efficient algorithm for Polyomino region checker.
 - Implement subtractive blocks.
 - Make the random puzzle generator more customizable.
 ---
