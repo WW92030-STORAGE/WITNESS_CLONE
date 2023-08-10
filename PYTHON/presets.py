@@ -50,6 +50,28 @@ def swampyboots():
 	
 	return swampyboots
 
+# The control panel
+def prism():
+	arr = []
+	for i in range(7):
+		row = []
+		for j in range(11):
+			row.append(Object())
+		arr.append(row)
+	
+	bar = BlockGroup(False, False, [(0, 0), (1, 0), (2, 0)])
+	bar.normalize()
+	arr[6][0] = Endpoint(True)
+	arr[0][10] = Endpoint(False)
+	arr[1][5] = Blob(Color.GREEN)
+	arr[5][1] = Blob(Color.BLUE)
+	arr[5][9] = Blob(Color.RED)
+	arr[5][5] = bar
+	puz = Grid(arr)
+	puz.defaultGrid()
+	return puz
+
+
 # The square puzzle in the RGB room
 def azion():
 	arr = []

@@ -223,7 +223,7 @@ def render(output, puzzle, width = 1024, height = 1024, margin = 96, thickness =
 			# Draw blocks
 
 			if (isinstance(element, BlockGroup)):
-				angle = 0 if element.oriented else -1 * math.pi / 6
+				angle = 0 if element.oriented else math.pi / 6
 				dimension = max(element.boundingbox[0], element.boundingbox[1])
 
 				shape = generateDrude((xpos, ypos), element, grid_spacing / dimension, angle)

@@ -52,7 +52,10 @@ swampyboots.ver((8, 0))
 
 render("examples/swampboots.png", swampyboots, filter = (0, 255, 0))
 
-
+dedication = presets.prism()
+render("examples/prism0.png", dedication, filter = Color.RED.value)
+render("examples/prism1.png", dedication, filter = Color.GREEN.value)
+render("examples/prism2.png", dedication, filter = Color.BLUE.value)
 
 allegiance = presets.azion()
 render("examples/azion0.png", allegiance, filter = Color.RED.value)
