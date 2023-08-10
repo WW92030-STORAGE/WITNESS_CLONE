@@ -343,7 +343,7 @@ class Grid:
 		vis.clear()
 		region = set()
 		
-		for ii in self.stars:
+		for ii in self.blocks:
 			if ii in vis:
 				continue
 			region.clear()
@@ -388,11 +388,11 @@ class Grid:
 			for i in collected:
 				pieces.append(self.get(i))
 		
-		if testregion.solve(pieces):
-			pass
-		else:
-			for i in collected:
-				self.violations.add(i)
+			if testregion.solve(pieces):
+				pass
+			else:
+				for i in collected:
+					self.violations.add(i)
 		
 		'''
 		// THE PHOENIX is an immortal creature, one that rises from the ashes once its life is over.
