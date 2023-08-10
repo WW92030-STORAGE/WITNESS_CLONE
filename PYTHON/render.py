@@ -203,13 +203,25 @@ def render(output, puzzle, width = 1024, height = 1024, margin = 96, thickness =
 
 			if (isinstance(element, BlockGroup)):
 				angle = 0 if element.oriented else -1 * math.pi / 6
-				dimension = max(element.boundingbox[0], element.boundingbox[1]) - 1
+				dimension = max(element.boundingbox[0], element.boundingbox[1])
 
 				shape = generateDrude((xpos, ypos), element, grid_spacing / dimension, angle)
 				for s in shape:
 					draw.polygon(s, fill = colorize(puzzle, (i, j)))
 
+			# Draw cancels
 
+			if (isinstance(element, Cancel)):
+				crad = grid_spacing / 4
+				linewidth = thickness // 2
+				color = colorize(puzzle, (i, j))
+				if (element.color == Color.NIL):
+					color = Color.WHITE.value
+				if (not element.ignored):
+					color = Color.RED.value
+				draw.line((xpos, ypos - crad, xpos, ypos), width = linewidth, fill = color)
+				draw.line((xpos - crad * math.sqrt(0.75), ypos + crad * 0.5, xpos, ypos), width = linewidth, fill = color)
+				draw.line((xpos + crad * math.sqrt(0.75), ypos + crad * 0.5, xpos, ypos), width = linewidth, fill = color)
 
 			# Draw the path
 			if (element.isPathOccupied):

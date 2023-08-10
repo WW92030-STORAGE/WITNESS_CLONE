@@ -448,6 +448,8 @@ class Grid:
 						continue
 					vis.add(nextone)
 					q.put(nextone)
+					q.put(mid)
+					vis.add(mid)
 			
 			self.ignored.add(ii)
 			self.board[ii[0]][ii[1]].ignored = True
@@ -467,6 +469,8 @@ class Grid:
 				if isinstance(o, BlockGroup):
 					self.blocks.discard(i)
 				
+				self.violations.discard(i)
+				
 				if self.ver(src):
 					retval = True
 				
@@ -481,13 +485,15 @@ class Grid:
 					self.triangles.add(i)
 				if isinstance(o, BlockGroup):
 					self.blocks.add(i)
+				self.violations.add(i)
 				if (retval):
 					break
 			
-			self.ignored.discard(ii)
-			self.board[ii[0]][ii[1]].ignored = False
 			if (retval):
 				return True
+
+			self.ignored.discard(ii)
+			self.board[ii[0]][ii[1]].ignored = False
 		
 		return False
 		
