@@ -80,7 +80,8 @@ swampboots[3][7] = bar
 swampyboots = Grid(swampboots)
 swampyboots.defaultGrid()
 
-swampyboots.drawPath([(8, 0), (8, 2), (6, 2), (6, 8), (2, 8), (2, 6), (0, 6), (0, 8)])
+# swampyboots.drawPath([(8, 0), (8, 2), (6, 2), (6, 8), (2, 8), (2, 6), (0, 6), (0, 8)])
+swampyboots.drawPath([(8, 0), (6, 0), (6, 2), (8, 2), (8, 4), (6, 4), (6, 8), (2, 8), (2, 6), (0, 6), (0, 8)])
 swampyboots.ver((8, 0))
 
 render("swampboots.png", swampyboots)

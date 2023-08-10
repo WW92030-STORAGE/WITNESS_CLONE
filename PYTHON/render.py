@@ -79,7 +79,7 @@ def generateDrude(pos, element, block_spacing, angle):
 
 		xpos = pos[0] + xp * c - yp * s
 		ypos = pos[1] - xp * s - yp * c
-		list.append(generateSquare((xpos, ypos), block_spacing * 0.9, -1 * angle))
+		list.append(generateSquare((xpos, ypos), block_spacing * 0.95, -1 * angle))
 	
 	return list
 
@@ -156,7 +156,7 @@ def render(output, puzzle, width = 1024, height = 1024, margin = 96, thickness =
 		for j in range(0, len(puzzle.board[i]), 2):
 			xpos = margin_x + grid_spacing * j
 			ypos = margin_y + grid_spacing * i
-			draw.ellipse((xpos - rad, ypos - rad, xpos + rad, ypos + rad), fill=line)
+			draw.ellipse((xpos - rad + 1, ypos - rad + 1, xpos + rad, ypos + rad), fill=line)
 			if (util.isStartingPoint(puzzle.get((i, j)))):
 				draw.ellipse((xpos - thickness, ypos - thickness, xpos + thickness, ypos + thickness), fill=line)
 	
@@ -203,7 +203,7 @@ def render(output, puzzle, width = 1024, height = 1024, margin = 96, thickness =
 
 			if (isinstance(element, BlockGroup)):
 				angle = 0 if element.oriented else -1 * math.pi / 6
-				dimension = max(element.boundingbox[0], element.boundingbox[1])
+				dimension = max(element.boundingbox[0], element.boundingbox[1]) - 1
 
 				shape = generateDrude((xpos, ypos), element, grid_spacing / dimension, angle)
 				for s in shape:
@@ -230,7 +230,7 @@ def render(output, puzzle, width = 1024, height = 1024, margin = 96, thickness =
 						draw.line((xpos - length, ypos + length, xpos, ypos), width=thickness, fill=path, joint="curve")
 						draw.ellipse((xpos - length - rad, ypos + length - rad, xpos - length + rad, ypos + length + rad), fill=path)
 				elif (i % 2 == 0 and j % 2 == 0):
-					draw.ellipse((xpos - rad, ypos - rad, xpos + rad, ypos + rad), fill=path)
+					draw.ellipse((xpos - rad + 1, ypos - rad + 1, xpos + rad, ypos + rad), fill=path)
 				elif (j % 2 == 1):
 					draw.line((xpos - grid_spacing, ypos, xpos + grid_spacing, ypos), fill=path, width=thickness)
 				elif (i % 2 == 1):
