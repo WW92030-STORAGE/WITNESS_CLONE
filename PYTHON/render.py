@@ -10,6 +10,7 @@ from PIL import Image, ImageDraw
 
 
 # Diameter always means the distance across in the cardinal directions.
+# If there is an angle then the diameter is rotated around the same angle
 
 def generateHexagon(pos, diameter):
 	list = []
@@ -51,6 +52,35 @@ def generateStar(pos, diameter):
 		yp = (pos[1] + diameter * math.sqrt(0.125) * dy[i % 4])
 		list[1].append((xp, yp))
 
+	return list
+
+def generateSquare(pos, diameter, angle):
+	list = []
+	for i in range(4):
+		theta = math.pi * (0.25 + (i / 2)) + angle
+		xp = pos[0] + (diameter * 0.5) * math.cos(theta)
+		yp = pos[1] + (diameter * 0.5) * math.sin(theta)
+		list.append((xp, yp))
+	return list
+
+def generateDrude(pos, element, block_spacing, angle):
+	element.normalize()
+	list = []
+	if not isinstance(element, BlockGroup):
+		return list
+	
+	bb = element.boundingbox
+	s = math.sin(angle)
+	c = math.cos(angle)
+	
+	for block in element.pairs:
+		xp = (block[0] - (bb[0] - 1) / 2) * block_spacing
+		yp = (block[1] - (bb[1] - 1) / 2) * block_spacing
+
+		xpos = pos[0] + xp * c - yp * s
+		ypos = pos[1] + xp * s + yp * c
+		list.append(generateSquare((xpos, ypos), block_spacing * 0.9, angle))
+	
 	return list
 
 # Right now bg, line, path are solid colors. Filter is a solid color that dictates the light filter.
@@ -173,7 +203,12 @@ def render(output, puzzle, width = 1024, height = 1024, margin = 96, thickness =
 
 			if (isinstance(element, BlockGroup)):
 				angle = 0 if element.oriented else -1 * math.pi / 6
-				# TODO
+				dimension = max(element.boundingbox[0], element.boundingbox[1])
+
+				shape = generateDrude((xpos, ypos), element, grid_spacing / dimension, angle)
+				for s in shape:
+					draw.polygon(s, fill = colorize(puzzle, (i, j)))
+
 
 
 			# Draw the path

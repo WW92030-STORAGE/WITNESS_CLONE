@@ -6,7 +6,7 @@ import util
 
 from render import render
 
-thegroup = BlockGroup(False, False, {(0, 0), (1, 0), (0, 1)})
+thegroup = BlockGroup(False, False, {(0, 0), (-1, 0), (0, -1)})
 
 board = [[Endpoint(True), Dot(), Object(), Object(), Object()], [Object(), Star(Color.BLACK), Object(), thegroup, Object()], [Object(), Object(), Object(), Object(), Object()], [Object(), Triangle(2), Object(), Star(Color.BLACK), Object()], [Object(), Object(), Object(), Object(), Endpoint(False)]]
 
