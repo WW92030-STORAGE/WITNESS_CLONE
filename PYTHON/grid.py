@@ -176,7 +176,7 @@ class Grid:
 		for i in self.dots:
 			o = self.get(i)
 			if not o.isPathOccupied:
-				self.violations.add(o)
+				self.violations.add(i)
 		
 		for i in self.triangles:
 			o = self.get(i)
