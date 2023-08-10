@@ -2,26 +2,26 @@ import sys
 from enum import Enum
 
 class Color(Enum):
-    NIL = sys.maxsize
+    NIL = (sys.maxsize, sys.maxsize, sys.maxsize)
     
-    RED = 0xFF0000
-    GREEN = 0x00FF00
-    BLUE = 0x0000FF
-    YELLOW = 0xFFFF00
-    CYAN = 0x00FFFF
-    MAGENTA = 0xFF00FF
-    BLACK = 0
-    WHITE = 0xFFFFFF
+    RED = (255, 0, 0)
+    GREEN = (0, 255, 0)
+    BLUE = (0, 0, 255)
+    YELLOW = (255, 255, 0)
+    CYAN = (0, 255, 255)
+    MAGENTA = (255, 0, 255)
+    BLACK = (0, 0, 0)
+    WHITE = (255, 255, 255)
     
-    ORANGE = 0xFF8000
-    GREY = 0x808080
-    DARK = 0x404040
-    LIGHT = 0x0C0C0C
+    ORANGE = (255, 127, 0)
+    GREY = (127, 127, 127)
+    DARK = (63, 63, 63)
+    LIGHT = (191, 191, 191)
     
     # Furries!
     
-    SP2 = 0xCEB7FF
-    SP1 = 0x8AD8FF
+    SP2 = (206, 183, 255)
+    SP1 = (138, 216, 255)
 
 class Object:
     color = Color.NIL
