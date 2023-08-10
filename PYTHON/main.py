@@ -35,14 +35,14 @@ print(grid.ver((0, 0)))
 print((grid))
 print(grid.violations)
 
-render("image.png", grid)
+render("examples/image.png", grid)
 
 legosi = presets.legosi()
 
 legosi.drawPath([(8, 0), (0, 0), (0, 2), (8, 2), (8, 4), (2, 4), (2, 6), (8, 6), (8, 10), (6, 10), (6, 8), (0, 8), (0, 10)])
 
 legosi.ver((8, 0))
-render("legosi.png", legosi)
+render("examples/legosi.png", legosi)
 
 swampyboots = presets.swampyboots()
 
@@ -50,4 +50,16 @@ swampyboots = presets.swampyboots()
 swampyboots.drawPath([(8, 0), (6, 0), (6, 2), (8, 2), (8, 4), (6, 4), (6, 8), (2, 8), (2, 6), (0, 6), (0, 8)])
 swampyboots.ver((8, 0))
 
-render("swampboots.png", swampyboots, filter = (0, 255, 0))
+render("examples/swampboots.png", swampyboots, filter = (0, 255, 0))
+
+
+
+allegiance = presets.azion()
+render("examples/azion0.png", allegiance, filter = Color.RED.value)
+render("examples/azion1.png", allegiance, filter = Color.GREEN.value)
+render("examples/azion2.png", allegiance, filter = Color.BLUE.value)
+
+renevant = presets.nexie()
+render("examples/nexie0.png", renevant, filter = Color.RED.value)
+render("examples/nexie1.png", renevant, filter = Color.GREEN.value)
+render("examples/nexie2.png", renevant, filter = Color.BLUE.value)

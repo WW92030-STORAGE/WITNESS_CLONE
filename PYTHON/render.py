@@ -207,7 +207,7 @@ def render(output, puzzle, width = 1024, height = 1024, margin = 96, thickness =
 			
 			# Draw stars
 			if (isinstance(element, Star)):
-				shape = generateStar((xpos, ypos), grid_spacing)
+				shape = generateStar((xpos, ypos), grid_spacing * 2/3)
 				# print(shape)
 				draw.polygon(shape[0], fill = colorize(puzzle, (i, j), filter))
 				draw.polygon(shape[1], fill = colorize(puzzle, (i, j), filter))
