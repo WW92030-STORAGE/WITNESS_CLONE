@@ -6,7 +6,7 @@ import util
 
 from render import render
 
-thegroup = BlockGroup(False, False, {(0, 0), (-1, 0), (0, -1)})
+thegroup = BlockGroup(True, False, {(0, 0), (-1, 0), (0, -1)})
 
 board = [[Endpoint(True), Dot(), Object(), Object(), Object()], [Object(), Star(Color.BLACK), Object(), thegroup, Object()], [Object(), Object(), Object(), Object(), Object()], [Object(), Triangle(2), Object(), Star(Color.BLACK), Object()], [Object(), Object(), Object(), Object(), Endpoint(False)]]
 
@@ -55,18 +55,32 @@ graywolf[1][9] = graywolf[3][9] = graywolf[5][9] = Blob(Color.YELLOW)
 legosi = Grid(graywolf)
 legosi.defaultGrid()
 
-legosi.drawLine((0, 0), (8, 0))
-legosi.drawLine((0, 0), (0, 2))
-legosi.drawLine((0, 2), (8, 2))
-legosi.drawLine((8, 2), (8, 4))
-legosi.drawLine((8, 4), (2, 4))
-legosi.drawLine((2, 4), (2, 6))
-legosi.drawLine((2, 6), (8, 6))
-legosi.drawLine((8, 6), (8, 10))
-legosi.drawLine((8, 10), (6, 10))
-legosi.drawLine((6, 10), (6, 8))
-legosi.drawLine((6, 8), (0, 8))
-legosi.drawLine((0, 8), (0, 10))
+legosi.drawPath([(8, 0), (0, 0), (0, 2), (8, 2), (8, 4), (2, 4), (2, 6), (8, 6), (8, 10), (6, 10), (6, 8), (0, 8), (0, 10)])
 
 legosi.ver((8, 0))
 render("legosi.png", legosi)
+
+swampboots = []
+for i in range(9):
+	row = []
+	for j in range(9):
+		row.append(Object())
+	swampboots.append(row)
+
+boots = BlockGroup(True, False, [(0, 0), (0, 1), (3, 0), (3, 1)])
+lshape = BlockGroup(True, False, [(0, 0), (0, 1), (0, 2), (-1, 2), (-2, 2)])
+bar = BlockGroup(True, False, [(0, 0), (0, 1), (0, 2)])
+
+swampboots[8][0] = Endpoint(True)
+swampboots[0][8] = Endpoint(False)
+swampboots[5][3] = boots
+swampboots[1][1] = lshape
+swampboots[3][7] = bar
+
+swampyboots = Grid(swampboots)
+swampyboots.defaultGrid()
+
+swampyboots.drawPath([(8, 0), (8, 2), (6, 2), (6, 8), (2, 8), (2, 6), (0, 6), (0, 8)])
+swampyboots.ver((8, 0))
+
+render("swampboots.png", swampyboots)

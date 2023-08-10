@@ -87,6 +87,10 @@ class Grid:
 			for j in range(min(a[1], b[1]), max(a[1], b[1]) + 1):
 				(self.board[i][j]).isPathOccupied = True
 	
+	def drawPath(self, path):
+		for i in range(1, len(path)):
+			self.drawLine(path[i - 1], path[i])
+	
 	def __str__(self):
 		res = ""
 		for i in range(self.n):

@@ -78,8 +78,8 @@ def generateDrude(pos, element, block_spacing, angle):
 		yp = (block[1] - (bb[1] - 1) / 2) * block_spacing
 
 		xpos = pos[0] + xp * c - yp * s
-		ypos = pos[1] + xp * s + yp * c
-		list.append(generateSquare((xpos, ypos), block_spacing * 0.9, angle))
+		ypos = pos[1] - xp * s - yp * c
+		list.append(generateSquare((xpos, ypos), block_spacing * 0.9, -1 * angle))
 	
 	return list
 
@@ -167,7 +167,7 @@ def render(output, puzzle, width = 1024, height = 1024, margin = 96, thickness =
 
 			element = puzzle.get((i, j))
 
-			cut_radius = grid_spacing - thickness * 2
+			cut_radius = grid_spacing - thickness * 1.5
 			# Draw cuts in the path
 			if (i % 2 == 0 or j % 2 == 0) and not element.isPath:
 				# print((i, j))
