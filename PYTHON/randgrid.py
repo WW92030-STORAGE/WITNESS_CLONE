@@ -113,7 +113,7 @@ class RandGrid: # Right now always generates 4x4 grids.
         path = self.possiblePaths[random.randint(0, len(self.possiblePaths) - 1)]
         self.getRegions(path)
         attempts = 0
-        while attempts < NUM_ATTEMPTS:
+        while attempts < NUM_ATTEMPTS * NUM_ATTEMPTS:
             attempts = attempts + 1
             if self.singlepath:
                 self.pathfind()
@@ -126,6 +126,7 @@ class RandGrid: # Right now always generates 4x4 grids.
             minsize = sys.maxsize
             for i in self.gridRegions:
                 minsize = min(minsize, len(i))
+            # print(len(self.gridRegions), minsize, self.blobRegionScale(numCols), self.minRegionSize(len(self.gridRegions)))
             
             if minsize < self.minRegionSize(len(self.gridRegions)):
                 continue

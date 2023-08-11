@@ -188,7 +188,7 @@ def render(output, puzzle, width = 1024, height = 1024, margin = 96, thickness =
 
 			element = puzzle.get((i, j))
 
-			cut_radius = grid_spacing - thickness * 1.5
+			cut_radius = max(grid_spacing - thickness * 1.5, thickness * 0.5)
 			# Draw cuts in the path
 			if (i % 2 == 0 or j % 2 == 0) and not element.isPath:
 				# print((i, j))
