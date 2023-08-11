@@ -4,6 +4,7 @@ from blockgroup import BlockGroup
 from grid import Grid
 import util
 import presets
+from randgrid import RandGrid
 
 from render import render
 
@@ -66,3 +67,8 @@ renevant = presets.nexie()
 render("examples/nexie0.png", renevant, filter = Color.RED.value)
 render("examples/nexie1.png", renevant, filter = Color.GREEN.value)
 render("examples/nexie2.png", renevant, filter = Color.BLUE.value)
+
+rand = RandGrid()
+rand.pathfind()
+
+render("examples/random.png", rand.randBlobs(9, 3, 0))

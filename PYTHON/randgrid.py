@@ -6,6 +6,7 @@ import util
 
 import random
 import sys
+import math
 from queue import Queue
 
 BLOCKS_REGIONS = 3
@@ -30,9 +31,14 @@ class RandGrid: # Right now always generates 4x4 grids.
         res = []
         for i in range(self.size[0]):
             row = []
-            for i in range(self.size[1]):
+            for j in range(self.size[1]):
                 row.append(Object())
             res.append(row)
+        
+        for i in range(self.size[0]):
+            for j in range(self.size[1]):
+                if i % 2 == 0 or j % 2 == 0:
+                    res[i][j].isPath = True
         
         res[self.start[0]][self.start[1]] = Endpoint(True)
         res[self.end[0]][self.end[1]] = Endpoint(False)
@@ -70,6 +76,123 @@ class RandGrid: # Right now always generates 4x4 grids.
         grid = Grid(board)
         grid.defaultGrid()
         return grid
+
+    def randMaze(self, numCuts):
+        if (self.singlepath):
+            self.pathfind()
+        
+        path = self.possiblePaths[random.randint(0, len(self.possiblePaths) - 1)]
+        
+        things = set()
+        
+        count = 0
+        while len(things) < numCuts and count < NUM_ATTEMPTS * NUM_ATTEMPTS:
+            pos = (random.randint(0, self.size[0] - 1), random.randint(0, self.size[1] - 1))
+            if pos in path:
+                continue
+            if (pos[0] % 2 == 1) != (pos[1] % 2 == 1):
+                things.add(pos)
+            count = count + 1
+        
+        grid = Grid(self.objGrid())
+        for pos in things:
+            grid.board[pos[0]][pos[1]].isPath = False
+        
+        return grid
+    
+    def blobRegionScale(self,x):
+        return x * math.log(x) / math.log(2)
+    
+    def blobPathScale(self, x):
+        return 2 * (12 + random.randint(0, 7))
+    
+    def minRegionSize(self, x):
+        return 16 / x
+
+    def randBlobs(self, numBlobs, numCols, numCuts):
+        path = self.possiblePaths[random.randint(0, len(self.possiblePaths) - 1)]
+        self.getRegions(path)
+        attempts = 0
+        while attempts < NUM_ATTEMPTS:
+            attempts = attempts + 1
+            if self.singlepath:
+                self.pathfind()
+            path = self.possiblePaths[random.randint(0, len(self.possiblePaths) - 1)]
+            self.getRegions(path)
+
+            if len(self.gridRegions) < self.blobRegionScale(numCols):
+                continue
+            
+            minsize = sys.maxsize
+            for i in self.gridRegions:
+                minsize = min(minsize, len(i))
+            
+            if minsize < self.minRegionSize(len(self.gridRegions)):
+                continue
+            break
+        
+        v = self.objGrid()
+
+        things = set()
+        count = 0
+        while len(things) < numCuts and count < NUM_ATTEMPTS * NUM_ATTEMPTS:
+            pos = (random.randint(0, self.size[0] - 1), random.randint(0, self.size[1] - 1))
+            if pos in path:
+                continue
+            if (pos[0] % 2) != (pos[1] % 2):
+                things.add(pos)
+            count = count + 1
+        
+        for i in things:
+            v[i[0]][i[1]].isPath = False
+        count = 0
+        things.clear()
+        random.shuffle(self.COLORS)
+        perm = []
+        for i in range(len(self.gridRegions)):
+            perm.append(i)
+        random.shuffle(perm)
+
+        index = 0
+        while len(things) < numBlobs and count < NUM_ATTEMPTS * NUM_ATTEMPTS:
+            subcount = 0
+            while subcount < NUM_ATTEMPTS:
+                x = 1 + 2 * random.randint(0, self.size[0] // 2 - 1)
+                y = 1 + 2 * random.randint(0, self.size[1] // 2 - 1)
+                if not (x, y) in self.gridRegions[index]:
+                    things.add((x, y))
+                    break
+                subcount = subcount + 1
+            
+            index = (index + 1) % len(self.gridRegions)
+            count = count + 1
+        
+        count = 0
+        while len(things) < numBlobs and count < NUM_ATTEMPTS * NUM_ATTEMPTS:
+            x = 1 + 2 * random.randint(0, self.size[0] // 2 - 1)
+            y = 1 + 2 * random.randint(0, self.size[1] // 2 - 1)
+            things.add((x, y))
+            count = count + 1
+        
+        for i in things:
+            reg = -1
+            for index in range(len(self.gridRegions)):
+                if reg >= 0:
+                    break
+                if i in self.gridRegions[index]:
+                    reg = index
+            color = Color.GREY
+            index = perm[reg] % numCols
+            if (index < len(self.COLORS)):
+                color = self.COLORS[index]
+            v[i[0]][i[1]] = Blob(color)
+        
+        return Grid(v)
+        
+
+
+
+
     
     # Region Finding
 
