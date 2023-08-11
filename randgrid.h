@@ -396,7 +396,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
             path = possiblePaths[randint(possiblePaths.size())];
             getRegions(path);
 
-            if (gridRegions.size() > BLOCKS_REGIONS) break;
+            if (gridRegions.size() >= BLOCKS_REGIONS) break;
             attempts++;
         }
         
