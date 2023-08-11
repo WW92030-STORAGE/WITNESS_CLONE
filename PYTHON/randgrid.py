@@ -236,7 +236,104 @@ class RandGrid: # Right now always generates 4x4 grids.
         
         return Grid(v)
     
+    def randBlocks(self, numBlocks, numCuts): # numBlocks denotes how many cells are in a block.
+        path = self.possiblePaths[random.randint(0, len(self.possiblePaths) - 1)]
+        self.getRegions(path)
+        attempts = 0
+        while attempts < NUM_ATTEMPTS:
+            attempts = attempts + 1
+            if self.singlepath:
+                self.pathfind()
+            path = self.possiblePaths[random.randint(0, len(self.possiblePaths) - 1)]
+            self.getRegions(path)
 
+            if len(self.gridRegions) > BLOCKS_REGIONS:
+                break
+            attempts = attempts + 1
+
+        v = self.objGrid()
+
+        points = [] # Block points (compressed into block form)
+        gridpoints = [] # All points in raw form
+        things = set() # multipurpose
+        thingsvec = [] # multipurpose
+        intvec = [] # integer vector
+
+        subregions = [] # subregions
+        groupies = [] # list of blocks and their placements
+
+        count = 0
+        while len(things) < numCuts and count < NUM_ATTEMPTS * NUM_ATTEMPTS:
+            count = count + 1
+            pos = (random.randint(0, self.size[0] - 1), random.randint(0, self.size[1] - 1))
+            if pos in path:
+                continue
+            if (pos[0] % 2) != (pos[1] % 2):
+                things.add(pos)
+        
+        for i in things:
+            v[i[0]][i[1]].isPath = False
+
+        things.clear()
+        
+        mu = 0
+        for region in self.gridRegions:
+            size = 0
+            for p in region:
+                if (p[0] % 2 == 1) and (p[1] % 2 == 1):
+                    size = size + 1
+            intvec.append(size)
+            mu = mu + size
+        
+        mu = mu // len(self.gridRegions)
+        regi = 0
+        while (True):
+            regi = random.randint(0, len(self.gridRegions) - 1)
+            if intvec[regi] >= mu:
+                break
+        
+        region = self.gridRegions[regi]
+        for p in region:
+            if (p[0] % 2 == 0) or (p[1] % 2 == 0):
+                continue
+            points.append((p[0] // 2, p[1] // 2))
+            gridpoints.append(p)
+        
+        subs = math.ceil(len(gridpoints) / numBlocks)
+        while len(things) < subs:
+            things.add(gridpoints[random.randint(0, len(gridpoints) - 1)])
+        
+        for i in things:
+            thingsvec.append(i)
+        for i in range(subs):
+            subregions.append([])
+        
+        for p in gridpoints:
+            mind = sys.maxsize
+            mini = 0
+            for i in range(len(thingsvec)):
+                dist = abs(thingsvec[i][0] - p[0]) + abs(thingsvec[i][1] - p[1])
+                if dist < mind:
+                    mind = dist
+                    mini = i
+            subregions[mini].append((p[1] // 2, -1 * (p[0] // 2)))
+        
+        things.clear()
+        while len(things) < subs:
+            things.add(gridpoints[random.randint(0, len(gridpoints) - 1)])
+        thingsvec.clear()
+        for i in things:
+            thingsvec.append(i)
+        
+        random.shuffle(thingsvec)
+        subs = min(subs, len(thingsvec))
+        for i in range(subs):
+            decision = (random.randint(0, 3) != 0)
+            nbg = BlockGroup(decision, False, subregions[i])
+            nbg.normalize()
+            v[thingsvec[i][0]][thingsvec[i][1]] = nbg
+            
+        return Grid(v)
     
     # Region Finding
 
