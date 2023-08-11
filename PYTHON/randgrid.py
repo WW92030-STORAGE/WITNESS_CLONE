@@ -87,12 +87,12 @@ class RandGrid: # Right now always generates 4x4 grids.
         
         count = 0
         while len(things) < numCuts and count < NUM_ATTEMPTS * NUM_ATTEMPTS:
+            count = count + 1
             pos = (random.randint(0, self.size[0] - 1), random.randint(0, self.size[1] - 1))
             if pos in path:
                 continue
             if (pos[0] % 2 == 1) != (pos[1] % 2 == 1):
                 things.add(pos)
-            count = count + 1
         
         grid = Grid(self.objGrid())
         for pos in things:
@@ -136,12 +136,12 @@ class RandGrid: # Right now always generates 4x4 grids.
         things = set()
         count = 0
         while len(things) < numCuts and count < NUM_ATTEMPTS * NUM_ATTEMPTS:
+            count = count + 1
             pos = (random.randint(0, self.size[0] - 1), random.randint(0, self.size[1] - 1))
             if pos in path:
                 continue
             if (pos[0] % 2) != (pos[1] % 2):
                 things.add(pos)
-            count = count + 1
         
         for i in things:
             v[i[0]][i[1]].isPath = False
@@ -169,10 +169,10 @@ class RandGrid: # Right now always generates 4x4 grids.
         
         count = 0
         while len(things) < numBlobs and count < NUM_ATTEMPTS * NUM_ATTEMPTS:
+            count = count + 1
             x = 1 + 2 * random.randint(0, self.size[0] // 2 - 1)
             y = 1 + 2 * random.randint(0, self.size[1] // 2 - 1)
             things.add((x, y))
-            count = count + 1
         
         for i in things:
             reg = -1
@@ -188,10 +188,54 @@ class RandGrid: # Right now always generates 4x4 grids.
             v[i[0]][i[1]] = Blob(color)
         
         return Grid(v)
+
+    def randTriangles(self, numTriangles, numCuts):
+        if (self.singlepath):
+            self.pathfind()
         
+        path = self.possiblePaths[random.randint(0, len(self.possiblePaths) - 1)]
+        self.getRegions(path)
+        
+        v = self.objGrid()
 
+        things = set()
+        count = 0
+        while len(things) < numCuts and count < NUM_ATTEMPTS * NUM_ATTEMPTS:
+            count = count + 1
+            pos = (random.randint(0, self.size[0] - 1), random.randint(0, self.size[1] - 1))
+            if pos in path:
+                continue
+            if (pos[0] % 2) != (pos[1] % 2):
+                things.add(pos)
+        
+        for i in things:
+            v[i[0]][i[1]].isPath = False
 
-
+        
+        trix = dict()
+        count = 0
+        while len(things) < numTriangles and count < NUM_ATTEMPTS * NUM_ATTEMPTS:
+            count = count + 1
+            x = 1 + 2 * random.randint(0, self.size[0] // 2 - 1)
+            y = 1 + 2 * random.randint(0, self.size[1] // 2 - 1)
+            pathcount = 0
+            for d in range(4):
+                xp = x + self.dx[d]
+                yp = y + self.dy[d]
+                if not self.inside((xp, yp)):
+                    continue
+                if (xp, yp) in path:
+                    pathcount = pathcount + 1
+            if pathcount == 0:
+                continue
+            trix[(x, y)] = pathcount
+            things.add((x, y))
+        
+        for i in things:
+            v[i[0]][i[1]] = Triangle(trix[i])
+        
+        return Grid(v)
+    
 
     
     # Region Finding

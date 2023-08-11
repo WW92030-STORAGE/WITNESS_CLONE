@@ -71,4 +71,4 @@ render("examples/nexie2.png", renevant, filter = Color.BLUE.value)
 rand = RandGrid()
 rand.pathfind()
 
-render("examples/random.png", rand.randBlobs(9, 3, 0))
+render("examples/random.png", rand.randTriangles(10, 0))
