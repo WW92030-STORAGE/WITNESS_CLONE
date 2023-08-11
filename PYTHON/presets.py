@@ -59,7 +59,7 @@ def prism():
 			row.append(Object())
 		arr.append(row)
 	
-	bar = BlockGroup(False, False, [(0, 0), (1, 0), (2, 0)])
+	bar = BlockGroup(False, False, [(0, 0), (1, 0), (2, 0)], Color.WHITE)
 	bar.normalize()
 	arr[6][0] = Endpoint(True)
 	arr[0][10] = Endpoint(False)
