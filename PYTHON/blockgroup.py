@@ -67,6 +67,8 @@ class BlockGroup(Object):
 		self.pairs.add(pair)
 	
 	def remove(self, pair):
+		if not self.contains(pair):
+			return
 		self.pairs.discard(pair)
 		self.n = self.n - 1
 		
@@ -190,6 +192,7 @@ class BlockGroup(Object):
 		return res
 	
 	def dfsUtil(self, region, v, index):
+		# print(index, region.n, len(v))
 		if (index >= len(v)):
 			return region.n == 0
 		
@@ -203,12 +206,11 @@ class BlockGroup(Object):
 			for op in options[i]:
 				group.move(op)
 				region.removeRegion(group)
-				
 				res = self.dfsUtil(region, v, index + 1) or res
 				if (res):
 					return True
 					
-				group.addRegion(group)
+				region.addRegion(group)
 				group.invmov(op)
 			
 			group.rotate(1)

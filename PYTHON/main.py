@@ -75,33 +75,11 @@ rand.pathfind()
 render("examples/random.png", rand.randBlocks(4, 2))
 
 rand = RandGrid()
-rand.singlepath = False
-rand.pathfind()
-rand.visualize(0)
-randomGrid = rand.randBlobs(9, 3, 0)
-render("examples/random2.png", randomGrid)
 
-solver = Solver(randomGrid)
-
-'''
-for index in range(16):
-	randomGrid = rand.randBlobs(9, 3, 0)
-
-	solver.set(randomGrid)
-	sol = solver.solve()
-	for i in sol:
-		randomGrid.board[i[0]][i[1]].isPathOccupied = True
-	render("examples/random/example_" + str(index) + ".png", randomGrid)
-'''
-
-rand = RandGrid()
-rand.singlepath = True
-rand.pathfind()
-randomGrid = rand.randBlobs(4, 3, 0)
-print("!")
-
-solver.set(randomGrid)
+blockgrid = presets.swampyboots()
+blockgrid = rand.randBlocks(4, 0)
+solver = Solver(blockgrid)
 sol = solver.solve()
 for i in sol:
-	randomGrid.board[i[0]][i[1]].isPathOccupied = True
-render("examples/bigrandom.png", randomGrid)
+	blockgrid.board[i[0]][i[1]].isPathOccupied = True
+render("examples/blocktest.png", blockgrid)

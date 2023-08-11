@@ -154,7 +154,7 @@ class Grid:
 		
 		reachedend = False
 		
-		while (not q.empty()):
+		while (q.qsize() > 0):
 			p = q.get()
 			vis.add(p)
 			
@@ -230,7 +230,7 @@ class Grid:
 			q = Queue()
 			q.put(ii)
 			
-			while (not q.empty()):
+			while (q.qsize() > 0):
 				now = q.get()
 				vis.add(now)
 				
@@ -297,7 +297,7 @@ class Grid:
 			q = Queue()
 			q.put(ii)
 			
-			while (not q.empty()):
+			while (q.qsize() > 0):
 				now = q.get()
 				vis.add(now)
 				
@@ -355,7 +355,7 @@ class Grid:
 			q = Queue()
 			q.put(ii)
 			
-			while (not q.empty()):
+			while (q.qsize() > 0):
 				now = q.get()
 				vis.add(now)
 				region.add(now)
@@ -381,16 +381,21 @@ class Grid:
 					vis.add(nextone)
 					q.put(nextone)
 			
-			# print(region)
-			
 			regionvec = []
 			for p in region:
-				regionvec.append((p[1] // 2, -1 * (p[0]) // 2))
+				regionvec.append((p[1] // 2, -1 * (p[0] // 2)))
 			testregion = BlockGroup(True, False, regionvec)
+			testregion.normalize()
 			pieces = []
 			
 			for i in collected:
 				pieces.append(self.get(i))
+			
+			'''
+			print("\n", testregion.pairs)
+			for i in pieces:
+				print(i.pairs)
+			'''
 		
 			if testregion.solve(pieces):
 				pass
@@ -422,7 +427,7 @@ class Grid:
 			q = Queue()
 			q.put(ii)
 			
-			while (not q.empty()):
+			while (q.qsize() > 0):
 				now = q.get()
 				vis.add(now)
 				region.add(now)
@@ -496,7 +501,24 @@ class Grid:
 			self.board[ii[0]][ii[1]].ignored = False
 		
 		return False
-		
+	
+	def validateRegion(src, ban):
+		banned = set(ban)
+		dx = [1, 0, -1, 0]
+		dy = [0, 1, 0, -1]
+
+		blobs = set()
+		triangles = set()
+		dots = set()
+		cancels = set()
+		blocks = set()
+
+		vis = set()
+		q = Queue()
+		q.put(src)
+
+		while q.qsize() > 0:
+			pass
 		
 		
 		
