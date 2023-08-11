@@ -579,7 +579,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         int regi = 0;
         while (true) {
           regi = randint(gridRegions.size());
-          if (intvec[regi] > mu) break;
+          if (intvec[regi] >= mu) break;
         }
 
         set<pair<int, int>> region = gridRegions[regi];
