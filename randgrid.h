@@ -462,6 +462,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         for (auto i : gridpoints) cout << "[" << i.first << " " << i.second << "] ";
         cout << endl;
 
+        things.clear();
         int subs = std::ceil((double)(gridpoints.size()) / (double)(numBlocks));
         while (things.size() < subs) things.insert(gridpoints[randint(gridpoints.size())]);
 
