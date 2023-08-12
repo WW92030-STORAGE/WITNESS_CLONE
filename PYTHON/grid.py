@@ -502,7 +502,7 @@ class Grid:
 		
 		return False
 	
-	def validateRegion(src, ban):
+	def validateRegion(self, src, ban):
 		banned = set(ban)
 		dx = [1, 0, -1, 0]
 		dy = [0, 1, 0, -1]
@@ -518,10 +518,94 @@ class Grid:
 		q.put(src)
 
 		while q.qsize() > 0:
-			pass
+			now = q.get()
+			vis.add(now)
+
+			o = self.get(now)
+
+			if isinstance(o, Blob):
+				blobs.add(now)
+			if isinstance(o, Dot):
+				dots.add(now)
+			if isinstance(o, Triangle):
+				triangles.add(now)
+			if isinstance(o, BlockGroup):
+				blocks.add(now)
+			if isinstance(o, Cancel):
+				cancels.add(now)
+			
+			for i in range(4):
+				next = (now[0] + dx[i], now[1] + dy[i])
+				if not self.inside(next):
+					continue
+				if next in banned or next in vis:
+					continue
+				hit = self.get(next)
+				if hit.isPathOccupied:
+					continue
+				vis.add(next)
+				q.put(next)
 		
+		colors = set()
+		for i in blobs:
+			colors.add(self.get(i).color)
+		if (len(colors) > 1):
+			return False
 		
+		for i in dots:
+			if (not self.get(i).isPathOccupied) and (i in banned):
+				return False
 		
+		for i in triangles:
+			o = self.get(i)
+			if not isinstance(o, Triangle):
+				continue
+			target = o.x
+
+			cnt = 0
+			for d in range(4):
+				sus = (i[0] + dx[i], i[1] + dy[i])
+				if not self.inside(sus):
+					continue
+				if (self.get(sus).isPathOccupied) or (sus in banned):
+					cnt = cnt + 1
+			
+			if cnt != target:
+				return False
+			
+		if len(blocks) <= 0:
+			return True
 		
+		effectiveRegion = []
+		for i in vis:
+			if (i[1] % 2 == 1) and (i[0] % 2 == 1):
+				effectiveRegion.append((i[1] // 2, -1 * (i[0] // 2)))
 		
+		boop = []
+		for i in blocks:
+			o = self.get(i)
+			if not isinstance(o, BlockGroup):
+				continue
+			boop.append(o)
 		
+		bg = BlockGroup(1, 0, effectiveRegion)
+		bg.normalize()
+		
+		if not bg.solve(boop):
+			return False
+		
+		return True
+
+
+				
+
+
+
+
+
+		
+
+
+
+
+

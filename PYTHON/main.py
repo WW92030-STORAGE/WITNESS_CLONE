@@ -83,3 +83,14 @@ sol = solver.solve()
 for i in sol:
 	blockgrid.board[i[0]][i[1]].isPathOccupied = True
 render("examples/blocktest.png", blockgrid)
+
+'''
+sb = presets.swampyboots()
+solver.set(sb)
+sol = solver.solve()
+print(str(solver.callstopath), "CALLS TO PATH!")
+'''
+
+solver.set(rand.randBlobs(15, 3, 0))
+solver.solve()
+print(str(solver.callstopath), "CALLS TO PATH!")

@@ -45,7 +45,6 @@ class Solver:
             self.grid.board[src[0]][src[1]].isPathOccupied = False
             return
         
-        '''
         for ii in range(4):
             x0 = (src[0] + self.dx[(ii + 0) % 4], src[1] + self.dy[(ii + 0) % 4])
             x1 = (src[0] + self.dx[(ii + 1) % 4], src[1] + self.dy[(ii + 1) % 4])
@@ -66,7 +65,6 @@ class Solver:
                 if (not r1) and (not r3):
                     return
                 break
-        '''
 
         self.vis[src] = prev
         self.grid.board[src[0]][src[1]].isPathOccupied = True
