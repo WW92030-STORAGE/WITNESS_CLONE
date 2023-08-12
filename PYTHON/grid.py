@@ -56,7 +56,7 @@ class Grid:
 					self.board[i][j] = matrix[i][j]
 				
 				if (util.isStartingPoint(self.board[i][j])):
-					begin = (i, j)
+					self.begin = (i, j)
 					self.starts.add((i, j))
 				if (util.isEndingPoint(self.board[i][j])):
 					self.ends.add((i, j))
