@@ -212,6 +212,8 @@ class RandGrid: # Right now always generates 4x4 grids.
         for i in things:
             v[i[0]][i[1]].isPath = False
 
+        things.clear()
+
         
         trix = dict()
         count = 0
