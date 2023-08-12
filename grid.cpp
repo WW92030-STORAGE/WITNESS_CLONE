@@ -503,6 +503,8 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
     // If the path reaches a wall and it can go both ways, and if both regions fail this test...
     // Then we prune.
     
+    // UPDATE - This test now tests blocks as well.
+    
     bool Grid::validateRegion(int sx, int sy, vector<pair<int, int>> ban) {
         set<pair<int, int>> banned;
         for (auto i : ban) banned.insert(i);
@@ -514,6 +516,7 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
         set<pair<int, int>> triangles;
         set<pair<int, int>> dots;
         set<pair<int, int>> cancels;
+        set<pair<int, int>> blocks;
         
         set<pair<int, int>> vis;
         queue<pair<int, int>> q;
@@ -530,6 +533,7 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
             if (instanceof<Triangle>(o)) triangles.insert(now);
             if (instanceof<Dot>(o)) dots.insert(now);
             if (instanceof<Cancel>(o)) return true;
+            if (instanceof<BlockGroup>(o)) blocks.insert(now);
             
             for (int i = 0; i < 4; i++) {
                 pair<int, int> next = {now.first + dx[i], now.second + dy[i]};
@@ -561,6 +565,30 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
                 if (board[sus.first][sus.second]->isPathOccupied || banned.find(sus) != banned.end()) cnt++;
             }
             if (cnt != target) return false;
+        }
+        
+        // Test blocks
+        
+        if (blocks.size() <= 0) return true;
+        
+        vector<pair<int, int>> effectiveRegion;
+        for (auto i : vis) {
+            if (i.first % 2 == 0 || i.second % 2 == 0) continue;
+            effectiveRegion.push_back(make_pair(i.second / 2, -1 * i.first / 2));
+        }
+        
+        vector<BlockGroup> boop;
+        for (auto i : blocks) {
+            Object* o = board[i.first][i.second];
+            if (!instanceof<BlockGroup>(o)) continue;
+            boop.push_back(*(dynamic_cast<BlockGroup*>(o)));
+        }
+        
+        BlockGroup bg = BlockGroup(1, 0, effectiveRegion);
+        bg.normalize();
+        
+        if (!bg.solve(boop)) {
+            return false;
         }
         
         return true;
