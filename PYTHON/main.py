@@ -8,6 +8,9 @@ from randgrid import RandGrid
 
 from solver import Solver
 from render import render
+from witnessgame import WitnessGame
+
+'''
 
 thegroup = BlockGroup(True, False, {(0, 0), (-1, 0), (0, -1)})
 
@@ -84,13 +87,36 @@ for i in sol:
 	blockgrid.board[i[0]][i[1]].isPathOccupied = True
 render("examples/blocktest.png", blockgrid)
 
-'''
-sb = presets.swampyboots()
-solver.set(sb)
-sol = solver.solve()
-print(str(solver.callstopath), "CALLS TO PATH!")
-'''
+# sb = presets.swampyboots()
+# solver.set(sb)
+# sol = solver.solve()
+# print(str(solver.callstopath), "CALLS TO PATH!")
 
 solver.set(rand.randBlobs(15, 3, 0))
 solver.solve()
 print(str(solver.callstopath), "CALLS TO PATH!")
+
+'''
+
+random = RandGrid()
+random.pathfind()
+game = WitnessGame(random.randMaze(12))
+render("examples/game.png", game.grid)
+
+while True:
+    char = input()
+    if (char == "X"):
+        game.clear()
+        render("examples/game.png", game.grid)
+        continue
+    game.processInput(char)
+    render("examples/game.png", game.grid)
+    if (game.reachedEnd()):
+        if (game.grid.ver(game.origin)):
+            print("YOU WIN!!!!")
+            break
+        else:
+            print("YOU LOSE!!!!")
+            render("examples/game.png", game.grid)
+            game.clear()
+    
