@@ -76,7 +76,6 @@ void WitnessGame::clear() {
     startpts.clear();
     for (auto i : grid.starts) startpts.push_back(i);
     std::sort(startpts.begin(), startpts.end());
-    origin = startpts[0];
     pos = origin;
     for (int i = 0; i < grid.board.size(); i++) {
         for (int j = 0; j < grid.board[i].size(); j++) grid.board[i][j]->isPathOccupied = false;
