@@ -61,6 +61,11 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
         }
     }
     
+    void Grid::drawPath(vector<pair<int, int>> v) {
+        if (v.size() < 2) return;
+        for (int i = 1; i < v.size(); i++) drawLine(v[i - 1], v[i]);
+    }
+    
     Grid::Grid() {
         
     }

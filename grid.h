@@ -36,6 +36,8 @@ class Grid {
     
     void drawLine(pair<int, int> a, pair<int, int> b);
     
+    void drawPath(vector<pair<int, int>> v);
+    
     virtual ~Grid();
     
     string to_string();
