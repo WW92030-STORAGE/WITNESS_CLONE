@@ -52,7 +52,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         start = {8, 0}; // The grid is still double in size however points with both coordinates odd cannot be traversed.
         end = {0, 8};
 
-        singlepath = true;
+        singlepath = false;
 
         colors = vector<Color>({RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA, WHITE});
         
@@ -67,6 +67,8 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         
         start = a;
         end = b;
+        
+        singlepath = false;
 
         colors = vector<Color>({RED, GREEN, BLUE, YELLOW, CYAN, MAGENTA, WHITE});
         
@@ -449,7 +451,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         int regi = 0;
         while (true) {
           regi = randint(gridRegions.size());
-          if (intvec[regi] > mu) break;
+          if (intvec[regi] >= mu) break;
         }
 
         set<pair<int, int>> region = gridRegions[regi];
@@ -461,8 +463,9 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
 
         for (auto i : gridpoints) cout << "[" << i.first << " " << i.second << "] ";
         cout << endl;
-
+        
         things.clear();
+
         int subs = std::ceil((double)(gridpoints.size()) / (double)(numBlocks));
         while (things.size() < subs) things.insert(gridpoints[randint(gridpoints.size())]);
 
@@ -580,7 +583,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         int regi = 0;
         while (true) {
           regi = randint(gridRegions.size());
-          if (intvec[regi] >= mu) break;
+          if (intvec[regi] > mu) break;
         }
 
         set<pair<int, int>> region = gridRegions[regi];
