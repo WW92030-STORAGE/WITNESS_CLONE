@@ -36,18 +36,22 @@ void WitnessGame::setStart(int x) {
 }
 
 void WitnessGame::processInput(char c) { // Char to dz direction
-    int dir = rand() % 4;
+    int dir = -1;
     for (int i = 0; i < 4; i++) {
         if (c == dz[i]) dir = i;
+    }
+    if (dir < 0) {
+        std::cout << "INVALID DIRECTION\n";
+        return;
     }
     std::pair<int, int> between = {pos.first + dx[dir], pos.second + dy[dir]};
     std::pair<int, int> hit = {pos.first + 2 * dx[dir], pos.second + 2 * dy[dir]};
     if (!grid.inside(between) || !grid.inside(hit)) {
-        cout << "ERROR OUT OF BOUNDS\n";
+        std::cout << "ERROR OUT OF BOUNDS\n";
         return;
     }
     if (!grid.board[between.first][between.second]->isPath || !grid.board[hit.first][hit.second]->isPath) {
-        cout << "ERROR NOT VALID MOVE\n";
+        std::cout << "ERROR NOT VALID MOVE\n";
         return;
     }
     
