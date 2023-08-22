@@ -100,7 +100,7 @@ print(str(solver.callstopath), "CALLS TO PATH!")
 
 random = RandGrid()
 random.pathfind()
-game = WitnessGame(random.randMaze(12))
+game = WitnessGame(random.randBlobs(9, 3, 0))
 render("examples/game.png", game.grid)
 
 while True:
