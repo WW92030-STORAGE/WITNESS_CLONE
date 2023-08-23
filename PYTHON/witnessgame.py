@@ -29,7 +29,6 @@ class WitnessGame:
 	def reset(self, g):
 		self.grid = g
 		self.parent = dict()
-		self.pos = g.start
 
 		self.startingPoints = []
 		for p in g.starts:

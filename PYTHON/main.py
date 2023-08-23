@@ -109,6 +109,10 @@ while True:
         game.clear()
         render("examples/game.png", game.grid)
         continue
+    elif (char == "N"):
+        game.reset(random.randBlobs(9, 3, 0));
+        render("examples/game.png", game.grid)
+        continue
     game.processInput(char)
     render("examples/game.png", game.grid)
     if (game.reachedEnd()):
