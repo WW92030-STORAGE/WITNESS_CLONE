@@ -3,7 +3,7 @@
 - IF YOU OWN A PRIMAGEN OR RARE PROTOGEN (AS DEFINED BY ZOR) YOU ARE PROHIBITED FROM USING THIS CODE UNTIL FURTHER NOTICE.
 
 # WITNESS_CLONE
-- Clone of The Witness by Thekla Inc. as a portable interface.
+- Clone of The Witness by Thekla Inc. as a portable interface. C++ and Python.
 - This repo attempts to add as much of the puzzle mechanics as possible.
   <br/>
 - This is currently a work in progress.
@@ -39,6 +39,11 @@
 - The grid is internally represented as a (2n + 1) ⋅ (2m + 1) array, where the grid cells are n rows and m columns.
 - All points with both coordinates odd cannot have paths and must be empty or contain symbols instead.
 - Polyominoes are checked by reducing the region and the constituents into the Exact Cover problem and then using Knuth's DLX algorithm.
+
+# DEPENDENCIES
+
+- The Python version uses PIL/Pillow for rendering the images.
+- The C++ version uses only the standard libraries.
 
 # IMPORTANT
 
