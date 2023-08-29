@@ -131,7 +131,7 @@ int main()
     
     */
     
-    for (int i = 0; i < 4; i++) {
+    for (int i = 0; i < 16; i++) {
         auto start = std::chrono::high_resolution_clock::now();
         // sx.set(random.randBlocks(4, 0));
         Grid grid = random.randBlobs(9, 3, 0);
@@ -147,8 +147,9 @@ int main()
         std::cout << lol / 1000000.0 << "ms\n";
     }
     std::cout << "!!!!\n";
-    
     return 0;
+
+    // TODO - sx attempts to delete the grid stored internally (which deletes the objects inside problem is they have already been deleted).
 }
 
 

@@ -73,7 +73,7 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
     Grid::~Grid() {
         for (int i = 0; (size_t)i < board.size(); i++) {
             for (int j = 0; (size_t)j < board[i].size(); j++) {
-                // delete board[i][j];
+                delete board[i][j];
             }
         }
     }
