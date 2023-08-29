@@ -54,11 +54,11 @@ Solver::Solver() {
         for (int ii = 0; ii < 4; ii++) {
             pair<int, int> x0 = {src.first + dx[(ii + 0) % 4], src.second + dy[(ii + 0) % 4]};
             pair<int, int> x1 = {src.first + dx[(ii + 1) % 4], src.second + dy[(ii + 1) % 4]};
-            pair<int, int> x2 = {src.first + dx[(ii + 2) % 4], src.second + dy[(ii + 2) % 4]};
+            // pair<int, int> x2 = {src.first + dx[(ii + 2) % 4], src.second + dy[(ii + 2) % 4]};
             pair<int, int> x3 = {src.first + dx[(ii + 3) % 4], src.second + dy[(ii + 3) % 4]};
             bool blocked0 = !grid.inside(x0);
             bool blocked1 = !grid.inside(x1) || grid.board[x1.first][x1.second]->isPathOccupied;
-            bool blocked2 = !grid.inside(x2);
+            // bool blocked2 = !grid.inside(x2);
             bool blocked3 = !grid.inside(x3) || grid.board[x3.first][x3.second]->isPathOccupied;
             
             vector<pair<int, int>> banned({src, x0});

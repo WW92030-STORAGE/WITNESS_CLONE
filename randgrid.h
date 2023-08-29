@@ -711,7 +711,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         set<pair<int, int>> cuts;
         
         int count = 0;
-        while (cuts.size() < 12 && count < (1<<16)) {
+        while ((int)(cuts.size()) < numCuts && count < (1<<16)) {
             int x = randint(9);
             int y = randint(9);
             if (path.find({x, y}) != path.end()) continue;
