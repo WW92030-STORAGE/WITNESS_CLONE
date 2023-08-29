@@ -147,9 +147,14 @@ int main()
         std::cout << lol / 1000000.0 << "ms\n";
     }
     std::cout << "!!!!\n";
-    return 0;
 
     // TODO - sx attempts to delete the grid stored internally (which deletes the objects inside problem is they have already been deleted).
+    // For now these 2 lines will mitigate this issue (since now there is a grid to destroy).
+
+    Grid grid = Grid();
+    sx.set(grid);
+
+    return 0;
 }
 
 
