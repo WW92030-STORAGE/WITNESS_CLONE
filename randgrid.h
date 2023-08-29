@@ -6,6 +6,8 @@
 #include <map>
 #include <queue>
 #include <random>
+#include <algorithm>
+#include <ctime>
 
 #include "grid.h"
 
@@ -188,7 +190,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
           path = possiblePaths[randint(possiblePaths.size())];
           getRegions(path);
           
-          if (gridRegions.size() < blobRegionScale(numCols)) continue;
+          if ((int)(gridRegions.size()) < blobRegionScale(numCols)) continue;
 
           int minSize = INT_MAX;
           
@@ -212,7 +214,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         set<pair<int, int>> things;
         
         int count = 0;
-        while (things.size() < numCuts && count < (1<<16)) {
+        while ((int)(things.size()) < numCuts && count < (1<<16)) {
             int x = randint(9);
             int y = randint(9);
             if (path.find({x, y}) != path.end()) continue;
@@ -234,13 +236,13 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         std::random_shuffle(colors.begin(), colors.end());
         
         vector<int> perm(gridRegions.size());
-        for (int i = 0; i < perm.size(); i++) perm[i] = i;
+        for (int i = 0; (size_t)i < perm.size(); i++) perm[i] = i;
         
         std::random_shuffle(perm.begin(), perm.end());
 
         int theIndex = 0;
         
-        while (things.size() < numBlobs && count < NUM_ATTEMPTS) { // Attempt to collect dots evenly from all regions
+        while ((int)(things.size()) < numBlobs && count < NUM_ATTEMPTS) { // Attempt to collect dots evenly from all regions
           int subcount = 0;
           while (subcount < NUM_ATTEMPTS) {
             int x = 1 + 2 * randint(4);
@@ -255,7 +257,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
 
         count = 0;
         
-        while (things.size() < numBlobs && count < NUM_ATTEMPTS) {
+        while ((int)(things.size()) < numBlobs && count < NUM_ATTEMPTS) {
             int x = 1 + 2 * randint(4);
             int y = 1 + 2 * randint(4);
             
@@ -266,11 +268,11 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         
         for (auto i : things) {
             int reg = -1;
-            for (int index = 0; index < gridRegions.size(); index++) {
+            for (int index = 0; (size_t)index < gridRegions.size(); index++) {
                 if (reg >= 0) break;
                 if (gridRegions[index].find(i) != gridRegions[index].end()) reg = index;
             }
-            v[i.first][i.second] = new Blob((perm[reg] % numCols < colors.size()) ? colors[perm[reg] % numCols] : GREY);
+            v[i.first][i.second] = new Blob(((size_t)(perm[reg] % numCols) < colors.size()) ? colors[perm[reg] % numCols] : GREY);
         }
         
         // Return the grid.
@@ -293,7 +295,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         set<pair<int, int>> things;
         
         int count = 0;
-        while (things.size() < numCuts && count < (1<<16)) {
+        while ((int)(things.size()) < numCuts && count < (1<<16)) {
             int x = randint(9);
             int y = randint(9);
             if (path.find({x, y}) != path.end()) continue;
@@ -312,7 +314,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         
         count = 0;
         
-        while (things.size() < numTriangles && count < (1<<16)) {
+        while ((int)(things.size()) < numTriangles && count < (1<<16)) {
             int x = 1 + 2 * randint(4);
             int y = 1 + 2 * randint(4);
 
@@ -357,7 +359,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         set<pair<int, int>> things;
         
         int count = 0;
-        while (things.size() < numCuts && count < (1<<16)) {
+        while ((int)(things.size()) < numCuts && count < (1<<16)) {
             int x = randint(9);
             int y = randint(9);
             if (path.find({x, y}) != path.end()) continue;
@@ -375,7 +377,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
 
         count = 0;
         things.clear();
-        while (things.size() < numDots && count < (1<<16)) {
+        while ((int)(things.size()) < numDots && count < (1<<16)) {
           count++;
           pair<int, int> point = pathvec[randint(pathvec.size())];
           if (start == point || end == point) continue;
@@ -424,7 +426,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         vector<pair<pair<int, int>, BlockGroup*>> groupies; // List of blocks and their placements for the region
 
         int count = 0;
-        while (things.size() < numCuts && count < (1<<16)) {
+        while ((int)(things.size()) < numCuts && count < (1<<16)) {
             int x = randint(9);
             int y = randint(9);
             if (path.find({x, y}) != path.end()) continue;
@@ -467,7 +469,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         things.clear();
 
         int subs = std::ceil((double)(gridpoints.size()) / (double)(numBlocks));
-        while (things.size() < subs) things.insert(gridpoints[randint(gridpoints.size())]);
+        while ((int)(things.size()) < subs) things.insert(gridpoints[randint(gridpoints.size())]);
 
         for (auto i : things) thingsvec.push_back(i);
         subregions = vector<vector<pair<int, int>>>(subs, vector<pair<int, int>>());
@@ -478,7 +480,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         for (auto p : gridpoints) {
           int mind = INT_MAX;
           int mini = 0;
-          for (int i = 0; i < thingsvec.size(); i++) {
+          for (int i = 0; (size_t)i < thingsvec.size(); i++) {
             int dist = abs(thingsvec[i].first - p.first) + abs(thingsvec[i].second - p.second);
             if (dist < mind) {
               mind = dist;
@@ -494,7 +496,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         }
 
         things.clear();
-        while (things.size() < subs) things.insert(gridpoints[randint(gridpoints.size())]);
+        while ((int)(things.size()) < subs) things.insert(gridpoints[randint(gridpoints.size())]);
         thingsvec.clear();
         for (auto i : things) thingsvec.push_back(i);
 
@@ -555,7 +557,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         vector<pair<pair<int, int>, BlockGroup*>> groupies; // List of blocks and their placements for the region
 
         int count = 0;
-        while (things.size() < numCuts && count < (1<<16)) {
+        while ((int)(things.size()) < numCuts && count < (1<<16)) {
             int x = randint(9);
             int y = randint(9);
             if (path.find({x, y}) != path.end()) continue;
@@ -597,7 +599,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         cout << endl;
 
         int subs = 2;
-        while (things.size() < subs) things.insert(gridpoints[randint(gridpoints.size())]);
+        while ((int)(things.size()) < subs) things.insert(gridpoints[randint(gridpoints.size())]);
 
         for (auto i : things) thingsvec.push_back(i);
         subregions = vector<vector<pair<int, int>>>(subs, vector<pair<int, int>>());
@@ -608,7 +610,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         for (auto p : gridpoints) {
           int mind = INT_MAX;
           int mini = 0;
-          for (int i = 0; i < thingsvec.size(); i++) {
+          for (int i = 0; (size_t)i < thingsvec.size(); i++) {
             int dist = abs(thingsvec[i].first - p.first) + abs(thingsvec[i].second - p.second);
             if (dist < mind) {
               mind = dist;
@@ -624,7 +626,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         }
 
         things.clear();
-        while (things.size() < subs) things.insert(gridpoints[randint(gridpoints.size())]);
+        while ((int)(things.size()) < subs) things.insert(gridpoints[randint(gridpoints.size())]);
         thingsvec.clear();
         for (auto i : things) thingsvec.push_back(i);
 
@@ -828,7 +830,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
     }
     
     void dfs(pair<int, int> src, pair<int, int> prev, int numPaths) {
-      if (singlepath && possiblePaths.size() > numPaths) return;
+      if (singlepath && possiblePaths.size() > (size_t)numPaths) return;
         if (src == end) {
             parent.insert({src, prev});
             set<pair<int, int>> res;
@@ -873,14 +875,14 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
     }
     
     void visualize(int x) {
-        if (x < 0 || x >= possiblePaths.size()) return;
+        if (x < 0 || (size_t)x >= possiblePaths.size()) return;
         getRegions(possiblePaths[x]);
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
                 if (possiblePaths[x].find({i, j}) != possiblePaths[x].end()) cout << "#";
                 else {
                     bool bad = true;
-                    for (int reg = 0; reg < gridRegions.size(); reg++) {
+                    for (int reg = 0; (size_t)reg < gridRegions.size(); reg++) {
                         if (gridRegions[reg].find({i, j}) != gridRegions[reg].end()) {
                             cout << (char)(reg + 'A');
                             bad = false;

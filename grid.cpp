@@ -19,14 +19,14 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
         if (n % 2 == 0) n++;
         if (m % 2 == 0) m++;
         
-        board = vector<vector<Object*>>(n, vector<Object*>(m, new Object()));
+        board = vector<vector<Object*>>(n, vector<Object*>(m));
         
         starts = set<pair<int, int>>();
         ends = set<pair<int, int>>();
         
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
-                if (j < v[i].size()) board[i][j] = v[i][j];
+                if ((size_t)j < v[i].size()) board[i][j] = v[i][j];
                 if (isStartingPoint(board[i][j])) {
                     begin = {i, j};
                     starts.insert({i, j});
@@ -63,7 +63,7 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
     
     void Grid::drawPath(vector<pair<int, int>> v) {
         if (v.size() < 2) return;
-        for (int i = 1; i < v.size(); i++) drawLine(v[i - 1], v[i]);
+        for (int i = 1; (size_t)i < v.size(); i++) drawLine(v[i - 1], v[i]);
     }
     
     Grid::Grid() {
@@ -71,7 +71,9 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
     }
     
     Grid::~Grid() {
-        
+        for (int i = 0; (size_t)i < board.size(); i++) {
+            for (int j = 0; (size_t)j < board[i].size(); j++) delete board[i][j];
+        }
     }
     
     
@@ -96,7 +98,7 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
     
     bool Grid::inside(pair<int, int> p) {
         if (p.first < 0 || p.second < 0) return false;
-        if (p.first >= board.size() || p.second >= board[p.first].size()) return false;
+        if ((size_t)(p.first) >= board.size() || (size_t)(p.second) >= board[p.first].size()) return false;
         return true;
     }
     
@@ -218,7 +220,7 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
                     pair<int, int> next = {now.first + dx[i] * 2, now.second + dy[i] * 2};
                     if (!inside(mid) || !inside(next)) continue;
                     Object* between = board[mid.first][mid.second];
-                    Object* hit = board[next.first][next.second];
+                    // Object* hit = board[next.first][next.second];
                     if (between->isPathOccupied) continue;
                     if (vis.find(next) != vis.end()) continue;
                     vis.insert(next);
@@ -305,7 +307,7 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
                     pair<int, int> next = {now.first + dx[i] * 2, now.second + dy[i] * 2};
                     if (!inside(mid) || !inside(next)) continue;
                     Object* between = board[mid.first][mid.second];
-                    Object* hit = board[next.first][next.second];
+                    // Object* hit = board[next.first][next.second];
                     if (between->isPathOccupied) continue;
                     if (vis.find(next) != vis.end()) continue;
                     vis.insert(next);
@@ -375,7 +377,7 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
                     pair<int, int> next = {now.first + dx[i] * 2, now.second + dy[i] * 2};
                     if (!inside(mid) || !inside(next)) continue;
                     Object* between = board[mid.first][mid.second];
-                    Object* hit = board[next.first][next.second];
+                    // Object* hit = board[next.first][next.second];
                     if (between->isPathOccupied) continue;
                     if (vis.find(next) != vis.end()) continue;
                     vis.insert(next);

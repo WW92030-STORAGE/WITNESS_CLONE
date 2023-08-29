@@ -11,7 +11,7 @@
 
 #include "witnessgame.h"
 
-WitnessGame::WitnessGame(Grid g) {
+WitnessGame::WitnessGame(Grid& g) {
     grid = g;
     startpts.clear();
     for (auto i : grid.starts) startpts.push_back(i);
@@ -20,7 +20,7 @@ WitnessGame::WitnessGame(Grid g) {
     pos = origin;
 }
 
-void WitnessGame::reset(Grid g) {
+void WitnessGame::reset(Grid& g) {
     grid = g;
     startpts.clear();
     for (auto i : grid.starts) startpts.push_back(i);
@@ -77,8 +77,8 @@ void WitnessGame::clear() {
     for (auto i : grid.starts) startpts.push_back(i);
     std::sort(startpts.begin(), startpts.end());
     pos = origin;
-    for (int i = 0; i < grid.board.size(); i++) {
-        for (int j = 0; j < grid.board[i].size(); j++) grid.board[i][j]->isPathOccupied = false;
+    for (int i = 0; (size_t)i < grid.board.size(); i++) {
+        for (int j = 0; (size_t)j < grid.board[i].size(); j++) grid.board[i][j]->isPathOccupied = false;
     }
 }
 

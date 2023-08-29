@@ -24,8 +24,8 @@ class WitnessGame {
     const int dx[4] = {00, 01, 00, -1};
     const char dz[4] = {'R', 'D', 'L', 'U'};
     
-    WitnessGame(Grid g); // Init the grid
-    void reset(Grid g); // Change the grid and reset the game
+    WitnessGame(Grid& g); // Init the grid
+    void reset(Grid& g); // Change the grid and reset the game
     void setStart(int x); // Set the starting point to an available one
     
     void processInput(char c); // Char is converted to direction based on dz

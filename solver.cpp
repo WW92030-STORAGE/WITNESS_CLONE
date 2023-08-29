@@ -1,20 +1,21 @@
 #include "solver.h"
 
+#include <iostream>
 #include <set>
+#include <ctime>
 using std::set;
 using std::pair;
 
 Solver::Solver() {
-        grid = Grid();
         solution = vector<pair<int, int>>();
     }
     
-    Solver::Solver(Grid g) {
+    Solver::Solver(Grid& g) {
         grid = g;
         solution = vector<pair<int, int>>();
     }
     
-    void Solver::set(Grid g) {
+    void Solver::set(Grid& g) {
         grid = g;
         solution.clear();
     }
