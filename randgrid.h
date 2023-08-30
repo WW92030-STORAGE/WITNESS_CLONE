@@ -8,6 +8,7 @@
 #include <random>
 #include <algorithm>
 #include <ctime>
+#include <memory>
 
 #include "grid.h"
 
@@ -103,10 +104,10 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         // Get 2 colors
         std::random_shuffle(colors.begin(), colors.end());
 
-        vector<vector<Object*>> v = vector<vector<Object*>>(9, vector<Object*>(9));
+        vector<vector<std::shared_ptr<Object>>> v = vector<vector<std::shared_ptr<Object>>>(9, vector<std::shared_ptr<Object>>(9));
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                v[i][j] = new Object();
+                v[i][j] = std::shared_ptr<Object>(new Object());
             }
         }
 
@@ -119,13 +120,13 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
 
         int index = 0;
         for (auto i : ps) {
-            if (index & 1) v[i.first * 2 + 1][i.second * 2 + 1] = new Star(colors[0]);
-            else v[i.first * 2 + 1][i.second * 2 + 1] = new Star(colors[1]);
+            if (index & 1) v[i.first * 2 + 1][i.second * 2 + 1] = std::shared_ptr<Star>(new Star(colors[0]));
+            else v[i.first * 2 + 1][i.second * 2 + 1] = std::shared_ptr<Star>(new Star(colors[1]));
             index++;
         }
         
-        v[start.first][start.second] = new Endpoint(true);
-        v[end.first][end.second] = new Endpoint(false);
+        v[start.first][start.second] = std::shared_ptr<Endpoint>(new Endpoint(true));
+        v[end.first][end.second] = std::shared_ptr<Endpoint>(new Endpoint(false));
 
         Grid grid = Grid(v);
         grid.defaultGrid();
@@ -139,11 +140,11 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
     Grid randMaze() { // Generates a grid containing 12 cutoffs in (1<<16) attempts to get the edges.
         set<pair<int, int>> path = possiblePaths[randint(possiblePaths.size())];
         
-        vector<vector<Object*>> v(9, vector<Object*>(9));
+        vector<vector<std::shared_ptr<Object>>> v(9, vector<std::shared_ptr<Object>>(9));
         
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                v[i][j] = new Object();
+                v[i][j] = std::shared_ptr<Object>(new Object());
                 if (i % 2 == 0 || j % 2 == 0) v[i][j]->isPath = true;
             }
         }
@@ -161,8 +162,8 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         
         for (auto i : cuts) v[i.first][i.second]->isPath = false;
         
-        v[start.first][start.second] = new Endpoint(true);
-        v[end.first][end.second] = new Endpoint(false);
+        v[start.first][start.second] = std::shared_ptr<Endpoint>(new Endpoint(true));
+        v[end.first][end.second] = std::shared_ptr<Endpoint>(new Endpoint(false));
         
         return Grid(v);
     }
@@ -202,11 +203,11 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
           break;
         }
         
-        vector<vector<Object*>> v(9, vector<Object*>(9));
+        vector<vector<std::shared_ptr<Object>>> v(9, vector<std::shared_ptr<Object>>(9));
         
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                v[i][j] = new Object();
+                v[i][j] = std::shared_ptr<Object>(new Object());
                 if (i % 2 == 0 || j % 2 == 0) v[i][j]->isPath = true;
             }
         }
@@ -224,8 +225,8 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         
         for (auto i : things) v[i.first][i.second]->isPath = false;
         
-        v[start.first][start.second] = new Endpoint(true);
-        v[end.first][end.second] = new Endpoint(false);
+        v[start.first][start.second] = std::shared_ptr<Endpoint>(new Endpoint(true));
+        v[end.first][end.second] = std::shared_ptr<Endpoint>(new Endpoint(false));
         
         // Generate the blobs.
 
@@ -272,7 +273,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
                 if (reg >= 0) break;
                 if (gridRegions[index].find(i) != gridRegions[index].end()) reg = index;
             }
-            v[i.first][i.second] = new Blob(((size_t)(perm[reg] % numCols) < colors.size()) ? colors[perm[reg] % numCols] : GREY);
+            v[i.first][i.second] = std::shared_ptr<Blob>(new Blob(((size_t)(perm[reg] % numCols) < colors.size()) ? colors[perm[reg] % numCols] : GREY));
         }
         
         // Return the grid.
@@ -283,11 +284,11 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
     Grid randTriangles(int numTriangles, int numCuts) { // Generates a grid with up to numTriangles triangles and up to numCuts cuts
         set<pair<int, int>> path = possiblePaths[randint(possiblePaths.size())];
         
-        vector<vector<Object*>> v(9, vector<Object*>(9));
+        vector<vector<std::shared_ptr<Object>>> v(9, vector<std::shared_ptr<Object>>(9));
         
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                v[i][j] = new Object();
+                v[i][j] = std::shared_ptr<Object>(new Object());
                 if (i % 2 == 0 || j % 2 == 0) v[i][j]->isPath = true;
             }
         }
@@ -305,8 +306,8 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         
         for (auto i : things) v[i.first][i.second]->isPath = false;
         
-        v[start.first][start.second] = new Endpoint(true);
-        v[end.first][end.second] = new Endpoint(false);
+        v[start.first][start.second] = std::shared_ptr<Endpoint>(new Endpoint(true));
+        v[end.first][end.second] = std::shared_ptr<Endpoint>(new Endpoint(false));
         
         // Get the triangles
         
@@ -337,7 +338,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
                 int yp = i.second + dy[d];
                 if (path.find({xp, yp}) != path.end()) count++;
             }
-            if (count > 0) v[i.first][i.second] = new Triangle(count);
+            if (count > 0) v[i.first][i.second] = std::shared_ptr<Triangle>(new Triangle(count));
         }
         
         // Return the grid
@@ -347,11 +348,11 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
     Grid randDots(int numDots, int numCuts) { // Generates a grid with up to numDots dots and numCuts cuts
         set<pair<int, int>> path = possiblePaths[randint(possiblePaths.size())];
         
-        vector<vector<Object*>> v(9, vector<Object*>(9));
+        vector<vector<std::shared_ptr<Object>>> v(9, vector<std::shared_ptr<Object>>(9));
         
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                v[i][j] = new Object();
+                v[i][j] = std::shared_ptr<Object>(new Object());
                 if (i % 2 == 0 || j % 2 == 0) v[i][j]->isPath = true;
             }
         }
@@ -369,8 +370,8 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         
         for (auto i : things) v[i.first][i.second]->isPath = false;
         
-        v[start.first][start.second] = new Endpoint(true);
-        v[end.first][end.second] = new Endpoint(false);
+        v[start.first][start.second] = std::shared_ptr<Endpoint>(new Endpoint(true));
+        v[end.first][end.second] = std::shared_ptr<Endpoint>(new Endpoint(false));
 
         vector<pair<int, int>> pathvec;
         for (auto i : path) pathvec.push_back(i);
@@ -384,7 +385,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
           things.insert(point);
         }
 
-        for (auto i : things) v[i.first][i.second] = new Dot();
+        for (auto i : things) v[i.first][i.second] = std::shared_ptr<Dot>(new Dot());
 
         // Return the grid
         return Grid(v);
@@ -404,17 +405,17 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
             attempts++;
         }
         
-        vector<vector<Object*>> v(9, vector<Object*>(9));
+        vector<vector<std::shared_ptr<Object>>> v(9, vector<std::shared_ptr<Object>>(9));
         
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-              v[i][j] = new Object();
+              v[i][j] = std::shared_ptr<Object>(new Object());
               if (i % 2 == 0 || j % 2 == 0) v[i][j]->isPath = true;
             }
         }
 
-        v[start.first][start.second] = new Endpoint(true);
-        v[end.first][end.second] = new Endpoint(false);
+        v[start.first][start.second] = std::shared_ptr<Endpoint>(new Endpoint(true));
+        v[end.first][end.second] = std::shared_ptr<Endpoint>(new Endpoint(false));
         
         vector<pair<int, int>> points; // Points in a region, compressed into block form
         vector<pair<int, int>> gridpoints; // Points in a region, in raw
@@ -505,7 +506,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         subs = std::min(subs, (int)(thingsvec.size()));
         for (int i = 0; i < subs; i++) {
           bool theDecidingFactor = randint(4) != 0; // Fixed orientation?
-          BlockGroup* nbg = new BlockGroup(theDecidingFactor, 0, subregions[i]);
+          std::shared_ptr<BlockGroup> nbg = std::shared_ptr<BlockGroup>(new BlockGroup(theDecidingFactor, 0, subregions[i]));
           if (!theDecidingFactor) nbg->rotate(randint(4));
           nbg->normalize();
           v[thingsvec[i].first][thingsvec[i].second] = nbg;
@@ -535,17 +536,17 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
             attempts++;
         }
         
-        vector<vector<Object*>> v(9, vector<Object*>(9));
+        vector<vector<std::shared_ptr<Object>>> v(9, vector<std::shared_ptr<Object>>(9));
         
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-              v[i][j] = new Object();
+              v[i][j] = std::shared_ptr<Object>(new Object());
               if (i % 2 == 0 || j % 2 == 0) v[i][j]->isPath = true;
             }
         }
 
-        v[start.first][start.second] = new Endpoint(true);
-        v[end.first][end.second] = new Endpoint(false);
+        v[start.first][start.second] = std::shared_ptr<Endpoint>(new Endpoint(true));
+        v[end.first][end.second] = std::shared_ptr<Endpoint>(new Endpoint(false));
         
         vector<pair<int, int>> points; // Points in a region, compressed into block form
         vector<pair<int, int>> gridpoints; // Points in a region, in raw
@@ -635,7 +636,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         subs = std::min(subs, (int)(thingsvec.size()));
         for (int i = 0; i < subs; i++) {
           bool theDecidingFactor = randint(4) != 0; // Fixed orientation?
-          BlockGroup* nbg = new BlockGroup(theDecidingFactor, 0, subregions[i]);
+          std::shared_ptr<BlockGroup> nbg = std::shared_ptr<BlockGroup>(new BlockGroup(theDecidingFactor, 0, subregions[i]));
           nbg->color = colors[0];
           if (!theDecidingFactor) nbg->rotate(randint(4));
           nbg->normalize();
@@ -669,7 +670,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
         things.clear();
         while (things.size() < 2) things.insert(gridpoints[randint(gridpoints.size())]);
 
-        for (auto p : things) v[p.first][p.second] = new Star(colors[1]);
+        for (auto p : things) v[p.first][p.second] = std::shared_ptr<Star>(new Star(colors[1]));
         Grid grid = Grid(v);
         return grid;
     }
@@ -699,11 +700,11 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
             if (valids >= 2) break;
         }
         
-        vector<vector<Object*>> v(9, vector<Object*>(9));
+        vector<vector<std::shared_ptr<Object>>> v(9, vector<std::shared_ptr<Object>>(9));
         
         for (int i = 0; i < 9; i++) {
             for (int j = 0; j < 9; j++) {
-                v[i][j] = new Object();
+                v[i][j] = std::shared_ptr<Object>(new Object());
                 if (i % 2 == 0 || j % 2 == 0) v[i][j]->isPath = true;
             }
         }
@@ -727,8 +728,8 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
 
         // TODO DO THIS - 4 STARS 4 DOTS
         
-        v[start.first][start.second] = new Endpoint(true);
-        v[end.first][end.second] = new Endpoint(false);
+        v[start.first][start.second] = std::shared_ptr<Endpoint>(new Endpoint(true));
+        v[end.first][end.second] = std::shared_ptr<Endpoint>(new Endpoint(false));
 
         count = 0;
         while (intset.size() < 2 && count < (1<<16)) {
@@ -759,7 +760,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
             count++;
           }
 
-          for (auto i : things) v[i.first][i.second] = new Star(colors[0]);
+          for (auto i : things) v[i.first][i.second] = std::shared_ptr<Star>(new Star(colors[0]));
         }
 
         things.clear();
@@ -775,7 +776,7 @@ class RandGrid { // RandGrid generates 4x4 (internally 9x9) puzzle grids.
           count++;
         }
 
-        for (auto p : things) v[p.first][p.second] = new Dot();
+        for (auto p : things) v[p.first][p.second] = std::shared_ptr<Dot>(new Dot());
 
         return Grid(v);
     }

@@ -2,6 +2,7 @@
 #define UTIL_H
 
 #include <string>
+#include <memory>
 #include "object.h"
 #include "blockgroup.h"
 #include "miscsymbols.h"
@@ -10,47 +11,47 @@ using std::string;
 using std::to_string;
 
 template<typename Base, typename T>
-inline bool instanceof(T *ptr) {
-    T* x = dynamic_cast<Base*>(ptr);
+inline bool instanceof(std::shared_ptr<T> ptr) {
+    std::shared_ptr<Base> x = std::dynamic_pointer_cast<Base>(ptr);
     return x != nullptr;
 }
 
-inline string get_type(Object* o) {
+inline string get_type(std::shared_ptr<Object> o) {
     if (instanceof<BlockGroup>(o)) return "+BLOCK";
     if (instanceof<Endpoint>(o)) {
-        if ((dynamic_cast<Endpoint*>(o))->starting) return "START!";
+        if ((std::dynamic_pointer_cast<Endpoint>(o))->starting) return "START!";
         return "ENDPT!";
     }
     if (instanceof<Dot>(o)) return "PATHDT";
     if (instanceof<Star>(o)) return "_STAR_";
     if (instanceof<Blob>(o)) return "_BLOB_";
     if (instanceof<Triangle>(o)) {
-        return "TRIX_" + to_string((dynamic_cast<Triangle*>(o))->x);
+        return "TRIX_" + to_string((std::dynamic_pointer_cast<Triangle>(o))->x);
     }
     if (instanceof<Cancel>(o)) {
-        if (!(dynamic_cast<Cancel*>(o))->ignored) return "CANCEL";
+        if (!(std::dynamic_pointer_cast<Cancel>(o))->ignored) return "CANCEL";
         else return "OBJECT";
     }
     return "OBJECT";
 }
 
-inline bool isStartingPoint(Object* o) {
+inline bool isStartingPoint(std::shared_ptr<Object> o) {
     if (instanceof<Endpoint>(o)) {
-        if ((dynamic_cast<Endpoint*>(o))->starting) return true;
+        if ((std::dynamic_pointer_cast<Endpoint>(o))->starting) return true;
         return false;
     }
     return false;
 }
 
-inline bool isEndingPoint(Object* o) {
+inline bool isEndingPoint(std::shared_ptr<Object> o) {
     if (instanceof<Endpoint>(o)) {
-        if ((dynamic_cast<Endpoint*>(o))->starting) return false;
+        if ((std::dynamic_pointer_cast<Endpoint>(o))->starting) return false;
         return true;
     }
     return false;
 }
 
-inline bool isSymbol(Object* o) {
+inline bool isSymbol(std::shared_ptr<Object> o) {
     if (instanceof<BlockGroup>(o)) return true;
     if (instanceof<Endpoint>(o)) return true;
     if (instanceof<Dot>(o)) return true;

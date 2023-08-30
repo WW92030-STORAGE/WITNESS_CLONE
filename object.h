@@ -3,6 +3,7 @@
 
 #include <climits>
 #include <iostream>
+#include <memory>
 
 enum Color { // Color is an enum to prevent exploiting loopholes (e.g. 2 similar colors considered different)
     NIL = INT_MAX, // Empty color
@@ -40,8 +41,8 @@ class Object {
         color = NIL;
     }
     
-    Object* clear() {
-        Object* res = new Object();
+    std::shared_ptr<Object> clear() {
+        std::shared_ptr<Object> res = std::shared_ptr<Object>(new Object());
         res->isPath = isPath;
         res->isPathOccupied = isPathOccupied;
         res->color = NIL;

@@ -1,5 +1,6 @@
 #include <queue>
 #include <map>
+#include <memory>
 #include "grid.h"
 #include "object.h"
 #include "util.h"
@@ -12,14 +13,14 @@ using std::endl;
 using std::pair;
 using std::make_pair;
 
-Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be changed unless changes are consistent across all aspects.
+Grid::Grid(vector<vector<std::shared_ptr<Object>>>& v) { // Once a grid is created it cannot be changed unless changes are consistent across all aspects.
         n = v.size();
         m = 0;
         for (auto i : v) m = max((int)(i.size()), m);
         if (n % 2 == 0) n++;
         if (m % 2 == 0) m++;
         
-        board = vector<vector<Object*>>(n, vector<Object*>(m));
+        board = vector<vector<std::shared_ptr<Object>>>(n, vector<std::shared_ptr<Object>>(m));
         
         starts = set<pair<int, int>>();
         ends = set<pair<int, int>>();
@@ -73,7 +74,7 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
     Grid::~Grid() {
         for (int i = 0; (size_t)i < board.size(); i++) {
             for (int j = 0; (size_t)j < board[i].size(); j++) {
-                // delete board[i][j]; // This line is commented out if you don't want segfaults.
+                // delete board[i][j];
             }
         }
     }
@@ -117,7 +118,7 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
         const int dx[4] = {01, 00, -1, 00};
         const int dy[4] = {00, 01, 00, -1};
         if (!isStartingPoint(board[sx][sy])) return false;
-        Object* o = board[sx][sy];
+        std::shared_ptr<Object> o = board[sx][sy];
         if (!o->isPathOccupied) return false;
         
         // cout << "BASIC CHECK COMPLETED";
@@ -135,7 +136,7 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
             for (int i = 0; i < 4; i++) {
                 pair<int, int> next = {p.first + dx[i], p.second + dy[i]};
                 if (!inside(next)) continue;
-                Object* n = board[next.first][next.second];
+                std::shared_ptr<Object> n = board[next.first][next.second];
                 if (isEndingPoint(n)) reachedend = true;
                 if (!n->isPath || !n->isPathOccupied) continue;
                 if (vis.find(next) != vis.end()) continue;
@@ -153,20 +154,20 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
         set<pair<int, int>> violations;
         
         for (auto i : dots) {
-            Object* o = board[i.first][i.second];
+            std::shared_ptr<Object> o = board[i.first][i.second];
             if (!o->isPathOccupied) violations.insert(i);
         }
         
         for (auto i : triangles) {
-            Object* o = board[i.first][i.second];
+            std::shared_ptr<Object> o = board[i.first][i.second];
             if (!instanceof<Triangle>(o)) continue;
-            int target = (dynamic_cast<Triangle*>(o))->x;
+            int target = (std::dynamic_pointer_cast<Triangle>(o))->x;
             int count = 0;
             for (int ii = 0; ii < 4; ii++) {
                 int xp = i.first + dx[ii];
                 int yp = i.second + dy[ii];
                 if (!inside({xp, yp})) continue;
-                Object* o2 = board[xp][yp];
+                std::shared_ptr<Object> o2 = board[xp][yp];
                 if (o2->isPath && o2->isPathOccupied) count++;
             }
             
@@ -184,7 +185,7 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
         // Violations are measured as the lesser violation. Thus if a region contains 2 blue and 3 white dots
         // Then the 2 blue dots are marked as violation. Cancellation symbols will also ``seek'' the blue dots.
         
-        map<Color, vector<Object*>> ding; // List of colors
+        map<Color, vector<std::shared_ptr<Object>>> ding; // List of colors
         map<Color, int> selectedcolors;
         set<pair<int, int>> collected;
         
@@ -204,10 +205,10 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
                 
                 // cout << now.first << " / " << now.second << endl;
                 
-                Object* cur = board[now.first][now.second];
+                std::shared_ptr<Object> cur = board[now.first][now.second];
                 
                 if (instanceof<Blob>(cur)) {
-                if (ding.find(cur->color) == ding.end()) ding.insert({cur->color, vector<Object*>()});
+                if (ding.find(cur->color) == ding.end()) ding.insert({cur->color, vector<std::shared_ptr<Object>>()});
                 (*(ding.find(cur->color))).second.push_back(cur);
                 }
                 
@@ -221,8 +222,8 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
                     pair<int, int> mid = {now.first + dx[i], now.second + dy[i]};
                     pair<int, int> next = {now.first + dx[i] * 2, now.second + dy[i] * 2};
                     if (!inside(mid) || !inside(next)) continue;
-                    Object* between = board[mid.first][mid.second];
-                    // Object* hit = board[next.first][next.second];
+                    std::shared_ptr<Object> between = board[mid.first][mid.second];
+                    // std::shared_ptr<Object> hit = board[next.first][next.second];
                     if (between->isPathOccupied) continue;
                     if (vis.find(next) != vis.end()) continue;
                     vis.insert(next);
@@ -293,9 +294,9 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
                 
                 // cout << now.first << " / " << now.second << endl;
                 
-                Object* cur = board[now.first][now.second];
+                std::shared_ptr<Object> cur = board[now.first][now.second];
                 
-                if (ding.find(cur->color) == ding.end()) ding.insert({cur->color, vector<Object*>()});
+                if (ding.find(cur->color) == ding.end()) ding.insert({cur->color, vector<std::shared_ptr<Object>>()});
                 (*(ding.find(cur->color))).second.push_back(cur);
                 
                 if (instanceof<Star>(cur)) {
@@ -308,8 +309,8 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
                     pair<int, int> mid = {now.first + dx[i], now.second + dy[i]};
                     pair<int, int> next = {now.first + dx[i] * 2, now.second + dy[i] * 2};
                     if (!inside(mid) || !inside(next)) continue;
-                    Object* between = board[mid.first][mid.second];
-                    // Object* hit = board[next.first][next.second];
+                    std::shared_ptr<Object> between = board[mid.first][mid.second];
+                    // std::shared_ptr<Object> hit = board[next.first][next.second];
                     if (between->isPathOccupied) continue;
                     if (vis.find(next) != vis.end()) continue;
                     vis.insert(next);
@@ -370,7 +371,7 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
                 
                 // cout << now.first << " / " << now.second << endl;
                 
-                Object* cur = board[now.first][now.second];
+                std::shared_ptr<Object> cur = board[now.first][now.second];
                 
                 if (instanceof<BlockGroup>(cur)) collected.insert(now);
                 
@@ -378,8 +379,8 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
                     pair<int, int> mid = {now.first + dx[i], now.second + dy[i]};
                     pair<int, int> next = {now.first + dx[i] * 2, now.second + dy[i] * 2};
                     if (!inside(mid) || !inside(next)) continue;
-                    Object* between = board[mid.first][mid.second];
-                    // Object* hit = board[next.first][next.second];
+                    std::shared_ptr<Object> between = board[mid.first][mid.second];
+                    // std::shared_ptr<Object> hit = board[next.first][next.second];
                     if (between->isPathOccupied) continue;
                     if (vis.find(next) != vis.end()) continue;
                     vis.insert(next);
@@ -401,9 +402,9 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
             BlockGroup testregion = BlockGroup(1, 0, regionvec);
             vector<BlockGroup> pieces;
             for (auto i : collected) {
-                Object* o = board[i.first][i.second];
+                std::shared_ptr<Object> o = board[i.first][i.second];
                 if (!instanceof<BlockGroup>(o)) continue;
-                BlockGroup* bg = dynamic_cast<BlockGroup*>(o);
+                std::shared_ptr<BlockGroup> bg = std::dynamic_pointer_cast<BlockGroup>(o);
                 pieces.push_back(*bg);
             }
             if (testregion.solve(pieces));
@@ -443,14 +444,14 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
                 
                 // cout << now.first << " / " << now.second << endl;
                 
-                Object* cur = board[now.first][now.second];
+                std::shared_ptr<Object> cur = board[now.first][now.second];
                 if (isSymbol(cur) && !instanceof<Cancel>(cur)) {
                     if (violations.find(now) != violations.end()) collected.insert(now);
                 }
                 for (int i = 0; i < 4; i++) {
                     pair<int, int> next = {now.first + dx[i], now.second + dy[i]};
                     if (!inside(next)) continue;
-                    Object* hit = board[next.first][next.second];
+                    std::shared_ptr<Object> hit = board[next.first][next.second];
                     if (hit->isPathOccupied) continue;
                     if (vis.find(next) != vis.end()) continue;
                     vis.insert(next);
@@ -459,14 +460,14 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
             }
             
             ignored.insert(ii);
-            (dynamic_cast<Cancel*>(board[ii.first][ii.second]))->ignored = true;
+            (std::dynamic_pointer_cast<Cancel>(board[ii.first][ii.second]))->ignored = true;
             
             // cout << "SYMBOL LOCATIONS FOR CANCEL " << ii.first << " " << ii.second << endl;
             // cout << "CANCEL STATUS " << cancels.size() << " " << ignored.size() << endl;
             bool retval = false;
             for (auto i : collected) {
                 // cout << i.first << " " << i.second << endl;
-                Object* o = board[i.first][i.second];
+                std::shared_ptr<Object> o = board[i.first][i.second];
                 board[i.first][i.second] = o->clear();
                 if (instanceof<Dot>(o)) dots.erase(dots.find(i));
                 else if (instanceof<Star>(o)) stars.erase(stars.find(i));
@@ -489,7 +490,7 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
             }
             
             ignored.erase(ignored.find(ii));
-            (dynamic_cast<Cancel*>(board[ii.first][ii.second]))->ignored = false;
+            (std::dynamic_pointer_cast<Cancel>(board[ii.first][ii.second]))->ignored = false;
             // cout << "FINISHED CANCELLING...\n";
             // disp();
             if (retval) return true;
@@ -536,7 +537,7 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
             q.pop();
             
             vis.insert(now);
-            Object* o = board[now.first][now.second];
+            std::shared_ptr<Object> o = board[now.first][now.second];
             
             if (instanceof<Blob>(o)) blobs.insert(now);
             if (instanceof<Triangle>(o)) triangles.insert(now);
@@ -547,7 +548,7 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
             for (int i = 0; i < 4; i++) {
                 pair<int, int> next = {now.first + dx[i], now.second + dy[i]};
                 if (!inside(next)) continue;
-                Object* hit = board[next.first][next.second];
+                std::shared_ptr<Object> hit = board[next.first][next.second];
                 if (hit->isPathOccupied) continue;
                 if (banned.find(next) != banned.end()) continue;
                 if (vis.find(next) != vis.end()) continue;
@@ -563,9 +564,9 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
         for (auto i : dots) if (!board[i.first][i.second]->isPathOccupied && banned.find(i) != banned.end()) return false;
         
         for (auto i : triangles) {
-            Object* o = board[i.first][i.second];
+            std::shared_ptr<Object> o = board[i.first][i.second];
             if (!instanceof<Triangle>(o)) continue;
-            int target = (dynamic_cast<Triangle*>(o))->x;
+            int target = (std::dynamic_pointer_cast<Triangle>(o))->x;
             
             int cnt = 0;
             for (int d = 0; d < 4; d++) {
@@ -588,9 +589,9 @@ Grid::Grid(vector<vector<Object*>>& v) { // Once a grid is created it cannot be 
         
         vector<BlockGroup> boop;
         for (auto i : blocks) {
-            Object* o = board[i.first][i.second];
+            std::shared_ptr<Object> o = board[i.first][i.second];
             if (!instanceof<BlockGroup>(o)) continue;
-            boop.push_back(*(dynamic_cast<BlockGroup*>(o)));
+            boop.push_back(*(std::dynamic_pointer_cast<BlockGroup>(o)));
         }
         
         BlockGroup bg = BlockGroup(1, 0, effectiveRegion);

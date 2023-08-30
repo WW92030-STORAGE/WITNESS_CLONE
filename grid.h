@@ -5,6 +5,7 @@
 #include <set>
 #include <string>
 #include <iostream>
+#include <memory>
 #include "object.h"
 #include "util.h"
 using std::vector;
@@ -15,7 +16,7 @@ class Grid {
     public:
     int n;
     int m;
-    vector<vector<Object*>> board;
+    vector<vector<std::shared_ptr<Object>>> board;
     set<pair<int, int>> starts;
     set<pair<int, int>> ends;
     set<pair<int, int>> dots;
@@ -30,7 +31,7 @@ class Grid {
     
     Grid();
     
-    Grid(vector<vector<Object*>>& v);
+    Grid(vector<vector<std::shared_ptr<Object>>>& v);
     
     void defaultGrid();
     

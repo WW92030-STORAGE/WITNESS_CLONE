@@ -137,7 +137,6 @@ int main()
         Grid grid = random.randBlobs(9, 3, 0);
         sx.set(grid);
         // sx.set(random.randTriangles(6 + random.randint(4), 0));
-        continue;
         sx.solve();
         if (sx.solution.size() == 0) cout << "ERROR!!!!!!!!!!!\n";
         else sx.disp();
@@ -150,9 +149,6 @@ int main()
 
     // TODO - sx attempts to delete the grid stored internally (which deletes the objects inside problem is they have already been deleted).
     // For now these 2 lines will mitigate this issue (since now there is a grid to destroy).
-
-    Grid grid = Grid();
-    sx.set(grid);
 
     return 0;
 }
