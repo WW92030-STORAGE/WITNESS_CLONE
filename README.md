@@ -1,7 +1,3 @@
-# PLEASE READ
-
-- IF YOU OWN A PRIMAGEN OR RARE PROTOGEN (AS DEFINED BY ZOR) YOU ARE PROHIBITED FROM USING THIS CODE UNTIL FURTHER NOTICE.
-
 # WITNESS_CLONE
 - Clone of The Witness by Thekla Inc. as a portable interface. C++ and Python.
 - This repo attempts to add as much of the puzzle mechanics as possible.
