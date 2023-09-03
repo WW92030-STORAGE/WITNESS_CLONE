@@ -46,6 +46,7 @@
 
 - The Python version uses PIL/Pillow for rendering the images.
 - The C++ version uses only the standard libraries.
+- Files marked as "_esp32" are slightly modified versions of the core files that are better suited for the ESP32.
 
 # TO DO【IN NO PARTICULAR ORDER】
 
