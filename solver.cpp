@@ -20,7 +20,7 @@ Solver::Solver() {
         solution.clear();
     }
     
-    void Solver::path(pair<int, int> src, pair<int, int> prev) {
+    void Solver::path(pair<int, int> src, pair<int, int> prev) { // Currently this only works if the start point is on the edge or a border (due to the pruning system).
         callstopath++;
         // cout << "[" << src.first << " " << src.second << "]\n";
         if (solution.size() > 0) return;
