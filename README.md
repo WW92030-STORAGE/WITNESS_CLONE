@@ -21,6 +21,7 @@
 - The solution line/curve is denoted as the Path. The Path will partition the grid into one or more Regions.
 - A Region is a set of grid Cells connected along the cardinal directions such that no two adjacent Cells have the Path as a border.
 - The Path must begin at a Starting Point (usually denoted by a circle) and end at an End Point (usually denoted by a rounded protrusion from the grid).
+- We will assume that the start point is on the edge of the Grid until further notice. (If you wish to place the start point somewhere else you must make Solver::validateRegion always return true.)
 
 # THE RULES
 
