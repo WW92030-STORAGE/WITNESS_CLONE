@@ -6,11 +6,6 @@
 - But one thing will remain certain: this is an interface. If you wish to attach this to some display you will have to figure that part out on your own.
 - **THIS REPOSITORY CONTAINS SPOILERS FOR THE WITNESS.**
 
-# IMPORTANT
-
-- YOU MUST CREDIT ME (WW92030-STORAGE/WW92030/NORMALEXISTING) WHENEVER YOU USE THIS CODE.
-- [OC LORE COMPLIANCE] IF YOU OWN A PRIMAGEN OR RARE PROTOGEN (AS DEFINED BY ZOR) YOU ARE PROHIBITED FROM USING THIS CODE UNTIL FURTHER NOTICE. VIOLATING THIS CONSTRAINT WILL RESULT IN BLOCKS ON VIRTUALLY ALL PLATFORMS.
-
 # FEATURES
 
 - Polynomino region checker (supports fixed and arbitrary rotations but not subtractive regions).
@@ -47,6 +42,11 @@
 - The Python version uses PIL/Pillow for rendering the images.
 - The C++ version uses only the standard libraries.
 - Files marked as "_esp32" are slightly modified versions of the core files that are better suited for the ESP32.
+
+# IMPORTANT
+
+- YOU MUST CREDIT ME (WW92030-STORAGE/WW92030/NORMALEXISTING) WHENEVER YOU USE THIS CODE.
+- [OC LORE COMPLIANCE] IF YOU OWN A PRIMAGEN OR RARE PROTOGEN (AS DEFINED BY ZOR) YOU ARE PROHIBITED FROM USING THIS CODE UNTIL FURTHER NOTICE. VIOLATING THIS CONSTRAINT WILL RESULT IN BLOCKS ON VIRTUALLY ALL PLATFORMS.
 
 # TO DO【IN NO PARTICULAR ORDER】
 
