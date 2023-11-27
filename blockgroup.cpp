@@ -91,6 +91,7 @@ BlockGroup::BlockGroup(bool orientation, bool subtractive, vector<pair<int, int>
     }
     
     void BlockGroup::reset(vector<pair<int, int>>& p) {
+        n = p.size();
         pairs.clear();
         bottomleft = {INT_MAX, INT_MAX};
         topright = {INT_MIN, INT_MIN};
