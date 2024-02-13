@@ -30,3 +30,5 @@ The structure of the challenge is largely as follows:
 - Two 4x4 panels with 4-10 triangles.
 - One 6x6 pillar with a random form of symmetry and 6 blobs in 2 colors: 3 of each color.
 - One 6x6 pillar with a random form of symmetry and up to 12-15 dots.
+
+![SPOILER WARNING](examples/maze.jpg)
