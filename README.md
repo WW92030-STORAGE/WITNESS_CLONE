@@ -26,7 +26,7 @@
 # THE RULES
 
 - 【HEXAGON DOTS】- The Path must intersect every one.
-- 【COLORED BLOBS】- The Region containing the blob cannot have anything of a different color.
+- 【COLORED BLOBS】- The Region containing the blob cannot have any blobs of a different color.
 - 【COLORED STARS】- The Region containing the star must have exactly one other object of the star's color. Other colors are disregarded.
 - 【POLYOMINOS】- The Region's shape (i.e. the shape of the Cells) must be composed exactly of the Polyominos contained within. No overlaps or excess Cells.
 - 【TRIANGLES】- The number of triangles denotes the number of sides of the Cell the symbol lies in that must be traversed by the Path.
