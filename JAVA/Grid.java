@@ -242,9 +242,9 @@ public class Grid {
                 vis.add(now);
 
                 Entity cur = board[now.x][now.y];
+                if (!ding.containsKey(cur.color)) ding.put(cur.color, new ArrayList<Entity>());
+                (ding.get(cur.color)).add(cur);
                 if (cur instanceof Star) {
-                    if (!ding.containsKey(cur.color)) ding.put(cur.color, new ArrayList<Entity>());
-                    (ding.get(cur.color)).add(cur);
 
                     collected.add(now);
                     if (!selectedcolors.containsKey(cur.color)) selectedcolors.put(cur.color, 0);
