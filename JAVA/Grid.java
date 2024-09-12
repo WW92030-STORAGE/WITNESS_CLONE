@@ -1,51 +1,53 @@
-import javax.xml.stream.events.StartDocument;
+package com.normalexisting.thewitness.lib;
+
 import java.awt.*;
+import java.util.Queue;
 import java.util.*;
 
 public class Grid {
     public int n;
     public int m;
-    Entity[][] board;
-    TreeSet<Pair> starts;
-    TreeSet<Pair> ends;
-    TreeSet<Pair> dots;
-    TreeSet<Pair> triangles;
-    TreeSet<Pair> blobs;
-    TreeSet<Pair> stars;
-    TreeSet<Pair> blocks;
-    TreeSet<Pair> cancels;
-    TreeSet<Pair> ignored;
+    PuzzleEntity[][] board;
+    TreeSet<IntegerPair> starts;
+    TreeSet<IntegerPair> ends;
+    TreeSet<IntegerPair> dots;
+    TreeSet<IntegerPair> triangles;
+    TreeSet<IntegerPair> blobs;
+    TreeSet<IntegerPair> stars;
+    TreeSet<IntegerPair> blocks;
+    TreeSet<IntegerPair> cancels;
+    TreeSet<IntegerPair> ignored;
 
-    Pair begin;
+    IntegerPair begin;
 
-    public Grid(Entity[][] v) {
+    public Grid(PuzzleEntity[][] v) {
         n = v.length;
         m = 0;
-        for (Entity[] i : v) m = Math.max(i.length, m);
+        for (PuzzleEntity[] i : v) m = Math.max(i.length, m);
         if (n % 2 == 0) n++;
         if (m % 2 == 0) m++;
 
-        board = new Entity[n][m];
+        board = new PuzzleEntity[n][m];
 
-        starts = new TreeSet<Pair>();
-        ends = new TreeSet<Pair>();
-        dots = new TreeSet<Pair>();
-        triangles = new TreeSet<Pair>();
-        blobs = new TreeSet<Pair>();
-        stars = new TreeSet<Pair>();
-        blocks = new TreeSet<Pair>();
-        cancels = new TreeSet<Pair>();
-        ignored = new TreeSet<Pair>();
+        starts = new TreeSet<IntegerPair>();
+        ends = new TreeSet<IntegerPair>();
+        dots = new TreeSet<IntegerPair>();
+        triangles = new TreeSet<IntegerPair>();
+        blobs = new TreeSet<IntegerPair>();
+        stars = new TreeSet<IntegerPair>();
+        blocks = new TreeSet<IntegerPair>();
+        cancels = new TreeSet<IntegerPair>();
+        ignored = new TreeSet<IntegerPair>();
 
         for (int i = 0; i < n; i++) {
             for (int j = 0; j < m; j++) {
                 if (j < v[i].length) board[i][j] = v[i][j];
                 if (Util.isStartingPoint(board[i][j])) {
-                    begin = new Pair(i, j);
+                    begin = new IntegerPair(i, j);
                     starts.add(begin.clone());
                 }
-                Entity e = board[i][j];
-                Pair p = new Pair(i, j);
+                PuzzleEntity e = board[i][j];
+                IntegerPair p = new IntegerPair(i, j);
                 if (Util.isEndingPoint(e)) ends.add(p);
                 if (e instanceof Dot) dots.add(p);
                 if (e instanceof Star) stars.add(p);
@@ -65,7 +67,7 @@ public class Grid {
         }
     }
 
-    void drawLine(Pair a, Pair b) {
+    public void drawLine(IntegerPair a, IntegerPair b) {
         if (a.x == b.x) {
             for (int i = Math.min(a.y, b.y); i <= Math.max(a.y, b.y); i++) board[a.x][i].isPathOccupied = true;
         }
@@ -74,15 +76,16 @@ public class Grid {
         }
     }
 
-    void drawPath(Pair[] v) {
+    void drawPath(IntegerPair[] v) {
         if (v.length < 2) return;
         for (int i = 1; i < v.length; i++) drawLine(v[i - 1], v[i]);
     }
 
     public String toString() {
         StringBuilder s = new StringBuilder("");
-        for (Entity[] i : board) {
-            for (Entity j : i) {
+        for (PuzzleEntity[] i : board) {
+            for (PuzzleEntity j : i) {
+                if (j == null) return "NULL GRID?????";
                 char open = j.isPathOccupied ? '[' : (j.isPath ? '+' : '_');
                 char close = j.isPathOccupied ? ']' : (j.isPath ? '+' : '_');
                 s.append(open);
@@ -98,7 +101,7 @@ public class Grid {
 
     // Verification
 
-    public boolean inside(Pair p) {
+    public boolean inside(IntegerPair p) {
         if (p.x < 0 || p.y < 0) return false;
         if (p.x >= n || p.y >= m) return false;
         return true;
@@ -106,27 +109,27 @@ public class Grid {
 
     public final int DX[] = {01, 00, -1, 00};
     public final int DY[] = {00, 01, 00, -1};
-    public final Pair DZ[] = {Pair.PLUS_X, Pair.PLUS_Y, Pair.MINUS_X, Pair.MINUS_Y};
+    public final IntegerPair DZ[] = {IntegerPair.PLUS_X, IntegerPair.PLUS_Y, IntegerPair.MINUS_X, IntegerPair.MINUS_Y};
 
     public boolean ver(int sx, int sy) {
         if (!Util.isStartingPoint(board[sx][sy])) return false;
-        Entity e = board[sx][sy];
+        PuzzleEntity e = board[sx][sy];
         if (!e.isPathOccupied) return false;
 
-        TreeSet<Pair> vis = new TreeSet<Pair>();
-        Queue<Pair> q = new LinkedList<Pair>();
-        q.add(new Pair(sx, sy));
+        TreeSet<IntegerPair> vis = new TreeSet<IntegerPair>();
+        Queue<IntegerPair> q = new LinkedList<IntegerPair>();
+        q.add(new IntegerPair(sx, sy));
 
         boolean reachedend = false;
 
         while (q.size() > 0) {
-            Pair p = q.poll();
+            IntegerPair p = q.poll();
             vis.add(p);
 
             for (int i = 0; i < 4; i++) {
-                Pair next = p.add(DZ[i]);
+                IntegerPair next = p.add(DZ[i]);
                 if (!inside(next)) continue;
-                Entity n = board[next.x][next.y];
+                PuzzleEntity n = board[next.x][next.y];
                 if (Util.isEndingPoint(n)) reachedend = true;
                 if (!n.isPath || !n.isPathOccupied) continue;
                 if (vis.contains(next)) continue;
@@ -137,25 +140,25 @@ public class Grid {
 
         if (!reachedend) return false;
 
-        TreeSet<Pair> violations = new TreeSet<Pair>();
+        TreeSet<IntegerPair> violations = new TreeSet<IntegerPair>();
 
         // DOTS + TRIANGLES
 
-        for (Pair i : dots) {
-            Entity o = board[i.x][i.y];
+        for (IntegerPair i : dots) {
+            PuzzleEntity o = board[i.x][i.y];
             if (!o.isPathOccupied) violations.add(i);
         }
 
-        for (Pair i : triangles) {
-            Entity o = board[i.x][i.y];
+        for (IntegerPair i : triangles) {
+            PuzzleEntity o = board[i.x][i.y];
             if (!(o instanceof Triangle)) continue;
             Triangle ox = (Triangle)o;
             int target = ox.x;
             int count = 0;
             for (int ii = 0; ii < 4; ii++) {
-                Pair p = i.add(DZ[ii]);
+                IntegerPair p = i.add(DZ[ii]);
                 if (!inside(p)) continue;
-                Entity o2 = board[p.x][p.y];
+                PuzzleEntity o2 = board[p.x][p.y];
                 if (o2.isPath && o2.isPathOccupied) count++;
             }
             if (count != target) violations.add(i);
@@ -163,13 +166,13 @@ public class Grid {
 
         // BLOBS + STARS
 
-        HashMap<Color, ArrayList<Entity>> ding = new HashMap<>();
+        HashMap<Color, ArrayList<PuzzleEntity>> ding = new HashMap<>();
         HashMap<Color, Integer> selectedcolors = new HashMap<>();
-        TreeSet<Pair> collected = new TreeSet<>();
+        TreeSet<IntegerPair> collected = new TreeSet<>();
 
         vis.clear();
 
-        for (Pair ii : blobs) {
+        for (IntegerPair ii : blobs) {
             if (vis.contains(ii)) continue;
             ding.clear();
             selectedcolors.clear();
@@ -178,12 +181,12 @@ public class Grid {
             q.add(ii);
 
             while (q.size() > 0) {
-                Pair now = q.poll();
+                IntegerPair now = q.poll();
                 vis.add(now);
 
-                Entity cur = board[now.x][now.y];
+                PuzzleEntity cur = board[now.x][now.y];
                 if (cur instanceof Blob) {
-                    if (!ding.containsKey(cur.color)) ding.put(cur.color, new ArrayList<Entity>());
+                    if (!ding.containsKey(cur.color)) ding.put(cur.color, new ArrayList<PuzzleEntity>());
                     (ding.get(cur.color)).add(cur);
 
                     collected.add(now);
@@ -192,11 +195,11 @@ public class Grid {
                 }
 
                 for (int i = 0; i < 4; i++) {
-                    Pair mid = now.add(DZ[i]);
-                    Pair next = mid.add(DZ[i]);
+                    IntegerPair mid = now.add(DZ[i]);
+                    IntegerPair next = mid.add(DZ[i]);
 
                     if (!inside(mid) || !inside(next)) continue;
-                    Entity between = board[mid.x][mid.y];
+                    PuzzleEntity between = board[mid.x][mid.y];
                     if (between.isPathOccupied) continue;
                     if (vis.contains(next)) continue;
                     vis.add(next);
@@ -220,8 +223,8 @@ public class Grid {
                 if (i != null && i != maxColor) hasmorecolors = true;
             }
 
-            for (Pair c : collected) {
-                Entity e2 = board[c.x][c.y];
+            for (IntegerPair c : collected) {
+                PuzzleEntity e2 = board[c.x][c.y];
                 if (e2.color != null && e2.color != maxColor) violations.add(c);
                 else if (hasmorecolors) violations.add(c);
             }
@@ -229,7 +232,7 @@ public class Grid {
 
         vis.clear();
 
-        for (Pair ii : stars) {
+        for (IntegerPair ii : stars) {
             if (vis.contains(ii)) continue;
             ding.clear();
             selectedcolors.clear();
@@ -238,11 +241,11 @@ public class Grid {
             q.add(ii);
 
             while (q.size() > 0) {
-                Pair now = q.poll();
+                IntegerPair now = q.poll();
                 vis.add(now);
 
-                Entity cur = board[now.x][now.y];
-                if (!ding.containsKey(cur.color)) ding.put(cur.color, new ArrayList<Entity>());
+                PuzzleEntity cur = board[now.x][now.y];
+                if (!ding.containsKey(cur.color)) ding.put(cur.color, new ArrayList<PuzzleEntity>());
                 (ding.get(cur.color)).add(cur);
                 if (cur instanceof Star) {
 
@@ -252,11 +255,11 @@ public class Grid {
                 }
 
                 for (int i = 0; i < 4; i++) {
-                    Pair mid = now.add(DZ[i]);
-                    Pair next = mid.add(DZ[i]);
+                    IntegerPair mid = now.add(DZ[i]);
+                    IntegerPair next = mid.add(DZ[i]);
 
                     if (!inside(mid) || !inside(next)) continue;
-                    Entity between = board[mid.x][mid.y];
+                    PuzzleEntity between = board[mid.x][mid.y];
                     if (between.isPathOccupied) continue;
                     if (vis.contains(next)) continue;
                     vis.add(next);
@@ -264,8 +267,8 @@ public class Grid {
                 }
             }
 
-            for (Pair i : collected) {
-                Entity e2 = board[i.x][i.y];
+            for (IntegerPair i : collected) {
+                PuzzleEntity e2 = board[i.x][i.y];
                 Color c = e2.color;
                 if (!ding.containsKey(c)) {
                     violations.add(i);
@@ -278,9 +281,9 @@ public class Grid {
         // BLOCK GROUPS
 
         vis.clear();
-        TreeSet<Pair> region = new TreeSet<Pair>();
+        TreeSet<IntegerPair> region = new TreeSet<IntegerPair>();
 
-        for (Pair ii : blocks) {
+        for (IntegerPair ii : blocks) {
             if (vis.contains(ii)) continue;
             region.clear();
             collected.clear();
@@ -288,19 +291,19 @@ public class Grid {
             q.add(ii);
 
             while (q.size() > 0) {
-                Pair now = q.poll();
+                IntegerPair now = q.poll();
                 vis.add(now);
                 region.add(now);
 
-                Entity cur = board[now.x][now.y];
+                PuzzleEntity cur = board[now.x][now.y];
                 if (cur instanceof BlockGroup) collected.add(now);
 
                 for (int i = 0; i < 4; i++) {
-                    Pair mid = now.add(DZ[i]);
-                    Pair next = mid.add(DZ[i]);
+                    IntegerPair mid = now.add(DZ[i]);
+                    IntegerPair next = mid.add(DZ[i]);
 
                     if (!inside(mid) || !inside(next)) continue;
-                    Entity between = board[mid.x][mid.y];
+                    PuzzleEntity between = board[mid.x][mid.y];
                     if (between.isPathOccupied) continue;
                     if (vis.contains(next)) continue;
                     vis.add(next);
@@ -308,21 +311,21 @@ public class Grid {
                 }
             }
 
-            Pair regionvec[] = new Pair[region.size()];
+            IntegerPair regionvec[] = new IntegerPair[region.size()];
             int index = 0;
-            for (Pair i : region) regionvec[index++] = new Pair(i.y / 2, -1 * (i.x / 2));
+            for (IntegerPair i : region) regionvec[index++] = new IntegerPair(i.y / 2, -1 * (i.x / 2));
             BlockGroup testregion = new BlockGroup(true, false, regionvec);
 
             BlockGroup pieces[] = new BlockGroup[collected.size()];
             index = 0;
-            for (Pair p : collected) {
-                Entity o = board[p.x][p.y];
+            for (IntegerPair p : collected) {
+                PuzzleEntity o = board[p.x][p.y];
                 if (!(o instanceof BlockGroup)) continue;
                 pieces[index++] = (BlockGroup)(o);
             }
             if (testregion.solve(pieces)) {}
             else {
-                for (Pair p : collected) violations.add(p);
+                for (IntegerPair p : collected) violations.add(p);
             }
         }
 
@@ -332,8 +335,10 @@ public class Grid {
 
         if (violations.size() == 0) return false;
 
+        // System.out.println("VIOLATIONS" + violations.toString());
+
         vis.clear();
-        for (Pair ii : cancels) {
+        for (IntegerPair ii : cancels) {
             if (ignored.contains(ii)) continue;
             if (vis.contains(ii)) continue;
             collected.clear();
@@ -341,20 +346,20 @@ public class Grid {
             q.add(ii);
 
             while (q.size() > 0) {
-                Pair now = q.poll();
+                IntegerPair now = q.poll();
                 vis.add(now);
                 region.add(now);
 
-                Entity cur = board[now.x][now.y];
+                PuzzleEntity cur = board[now.x][now.y];
                 if (Util.isSymbol(cur) && !(cur instanceof Cancel)) {
-                    if (violations.contains(cur)) collected.add(now);
+                    if (violations.contains(now)) collected.add(now);
                 }
 
                 for (int i = 0; i < 4; i++) {
-                    Pair next = now.add(DZ[i]);
+                    IntegerPair next = now.add(DZ[i]);
 
                     if (!inside(next) || !inside(next)) continue;
-                    Entity between = board[next.x][next.y];
+                    PuzzleEntity between = board[next.x][next.y];
                     if (between.isPathOccupied) continue;
                     if (vis.contains(next)) continue;
                     vis.add(next);
@@ -366,8 +371,8 @@ public class Grid {
             ((Cancel)(board[ii.x][ii.y])).ignored = true;
 
             boolean retval = false;
-            for (Pair p : collected) {
-                Entity o = board[p.x][p.y];
+            for (IntegerPair p : collected) {
+                PuzzleEntity o = board[p.x][p.y];
                 board[p.x][p.y] = o.clear();
                 if (o instanceof Dot) dots.remove(p);
                 else if (o instanceof Blob) blobs.remove(p);
