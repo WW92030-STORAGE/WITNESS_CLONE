@@ -18,5 +18,5 @@
 
 - Raylib Wiki - https://github.com/raysan5/raylib/wiki/
 - Raylib QUICKSTART - https://github.com/raylib-extras/raylib-quickstart
-- Unofficial Raylib Starter - https://github.com/educ8s/Raylib-CPP-Starter-Template-for-VSCODE
+- Unofficial Raylib Starter for Windows - https://github.com/educ8s/Raylib-CPP-Starter-Template-for-VSCODE
 - VSCode - https://code.visualstudio.com/
