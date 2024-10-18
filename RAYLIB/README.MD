@@ -10,6 +10,11 @@
 - Put the cpp and header files in the same folder as the outermost files.
 - Make sure that Raylib is installed and then build as needed.
 
+# BUILDING
+
+- If you are on Windows you can use this project as a template: https://github.com/educ8s/Raylib-CPP-Starter-Template-for-VSCODE
+- If you are on Linux you can build using the Makefile.
+
  RESOURCES
 
 - Raylib Wiki - https://github.com/raysan5/raylib/wiki/
