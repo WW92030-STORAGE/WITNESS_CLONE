@@ -8,5 +8,4 @@
 
 - Download the actual backend which is in the outermost file of this repo, and place them into a folder of your choosing.
 - Put these three files in the same folder as the outermost files.
-- Make sure Raylib is installed. CTRL+SHIFT+P to open the command palette. 
-- Run Task --> Build (Debug/Release)
+- Make sure Raylib is installed and then build the application using the Makefile.
