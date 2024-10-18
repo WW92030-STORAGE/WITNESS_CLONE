@@ -46,7 +46,7 @@ Color LITLINE = WHITE;
 
 
 Solver sx;
-RandGrid random;
+RandGrid randomgenerator;
 
 Grid thegrid;
 
@@ -113,10 +113,10 @@ inline void pickgrid() {
 
     std::cout << "CHOOSING GRID... "<< decisionmaking << "\n";
 
-                if (decisionmaking == 0) thegrid = random.randChallengeBlocks(2);
-                if (decisionmaking == 1) thegrid = random.randBlobs(9, 3, 2);
-                if (decisionmaking == 2) thegrid = random.randChallengeStars(2);
-                if (decisionmaking == 3) thegrid = random.randTriangles(10, 2);
+                if (decisionmaking == 0) thegrid = randomgenerator.randChallengeBlocks(2);
+                if (decisionmaking == 1) thegrid = randomgenerator.randBlobs(9, 3, 2);
+                if (decisionmaking == 2) thegrid = randomgenerator.randChallengeStars(2);
+                if (decisionmaking == 3) thegrid = randomgenerator.randTriangles(10, 2);
 }
 
 void render(Grid g, const int width, const int height, double marginprop = 0.1, bool buffer = true, bool clear = true) { 
@@ -289,7 +289,7 @@ int main() {
 
     //vector<vector<Entity*>> v;/
     
-    random.pathfind();
+    randomgenerator.pathfind();
 
     cout << "Hello World" << endl;
 
