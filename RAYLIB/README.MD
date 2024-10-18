@@ -18,3 +18,4 @@
  RESOURCES
 
 - Raylib Wiki - https://github.com/raysan5/raylib/wiki/
+- Raylib QUICKSTART - https://github.com/raylib-extras/raylib-quickstart
