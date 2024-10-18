@@ -12,10 +12,11 @@
 
 # BUILDING
 
-- Use the Quickstart as a template. Replace the `main.c` file with either `demo` or `game` renamed to `main.cpp`.
+- Use a Quickstart as a template. Replace the `main.c` file with either `demo` or `game` renamed to `main.cpp`.
 
  RESOURCES
 
 - Raylib Wiki - https://github.com/raysan5/raylib/wiki/
 - Raylib QUICKSTART - https://github.com/raylib-extras/raylib-quickstart
+- Unofficial Raylib Starter - https://github.com/educ8s/Raylib-CPP-Starter-Template-for-VSCODE
 - VSCode - https://code.visualstudio.com/
