@@ -7,7 +7,7 @@
 # HOW TO USE
 
 - Download the actual backend which is in the outermost file of this repo, and place them into a folder of your choosing.
-- Put these files in the same folder as the outermost files.
+- Put the cpp and header files in the same folder as the outermost files. (If you are on Windows you will also need the dll files.)
 - Make sure Raylib is installed and then build the application.
 - If you're on VSCode you can do CTRL+SHIFT+P to open the Command Palette and then `Run Task --> Build (Debug/Release)`.
 
