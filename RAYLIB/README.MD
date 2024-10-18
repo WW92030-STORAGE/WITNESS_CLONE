@@ -10,3 +10,7 @@
 - Put these three files in the same folder as the outermost files.
 - Make sure Raylib is installed and then build the application.
 - If you're on VSCode you can do CTRL+SHIFT+P to open the Command Palette and then `Run Task --> Build (Debug/Release)`.
+
+ RESOURCES
+
+- Raylib Wiki - https://github.com/raysan5/raylib/wiki/
