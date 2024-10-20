@@ -46,12 +46,13 @@ Color LITLINE = WHITE;
 
 
 Solver sx;
-RandGrid randomgenerator;
+RandGrid randomgrid;
 
 Grid thegrid;
 
 // Game state
 
+bool STARTED = false;
 bool LOCKEDIN = false;
 bool SOLVED = false;
 bool RESET = true;
@@ -113,10 +114,10 @@ inline void pickgrid() {
 
     std::cout << "CHOOSING GRID... "<< decisionmaking << "\n";
 
-                if (decisionmaking == 0) thegrid = randomgenerator.randChallengeBlocks(2);
-                if (decisionmaking == 1) thegrid = randomgenerator.randBlobs(9, 3, 2);
-                if (decisionmaking == 2) thegrid = randomgenerator.randChallengeStars(2);
-                if (decisionmaking == 3) thegrid = randomgenerator.randTriangles(10, 2);
+                if (decisionmaking == 0) thegrid = randomgrid.randChallengeBlocks(2);
+                if (decisionmaking == 1) thegrid = randomgrid.randBlobs(9, 3, 2);
+                if (decisionmaking == 2) thegrid = randomgrid.randChallengeStars(2);
+                if (decisionmaking == 3) thegrid = randomgrid.randTriangles(10, 2);
 }
 
 void render(Grid g, const int width, const int height, double marginprop = 0.1, bool buffer = true, bool clear = true) { 
@@ -279,7 +280,18 @@ void render(Grid g, const int width, const int height, double marginprop = 0.1, 
     if (buffer) EndDrawing();
 }
 
+inline void drawTitleScreen(int screenWidth, int screenHeight) {
+    ClearBackground(BLACK);
+    double cx = screenWidth / 2;
+    double cy = screenHeight / 2;
 
+    const int FS = 40;
+    const double SP = cy * 0.2;
+    const double LS = FS * 0.25;
+
+    DrawCenteredText("WELCOME TO WITNESS_CLONE", cx, SP, FS, WHITE);
+    DrawCenteredText("PRESS RMB TO BEGIN", cx, SP + FS + LS, FS, WHITE);
+}
 
 int main() {
     srand(time(0));
@@ -289,7 +301,7 @@ int main() {
 
     //vector<vector<Entity*>> v;/
     
-    randomgenerator.pathfind();
+    randomgrid.pathfind();
 
     cout << "Hello World" << endl;
 
@@ -298,6 +310,10 @@ int main() {
 
     while (WindowShouldClose() == false){
         BeginDrawing();
+
+        if (!STARTED) drawTitleScreen(screenWidth, screenHeight);
+
+
         std::pair<double, double> mp = pdvec2(GetMousePosition());
         Vector2 md = GetMouseDelta();
 
@@ -619,6 +635,7 @@ int main() {
             else LINE = RED;
         }
         else if (IsMouseButtonPressed(MOUSE_BUTTON_RIGHT)) {
+            if (!STARTED) STARTED = true;
             LOCKEDIN = false;
             EnableCursor();
 
@@ -651,11 +668,12 @@ int main() {
 
 
             */
-
+            sx.deactivate();
             pickgrid();
             SOLVED = false;
             RESET = false;
             LOCKEDIN = false;
+            
         }
         }
 
@@ -669,7 +687,11 @@ int main() {
         if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
             auto mpmp = GetMousePosition();
             if (mpmp.x >= screenWidth - 96 && mpmp.y >= screenHeight - 48) {
-                pickgrid();
+                LINE = WHITE;
+                sx.set(thegrid);
+                sx.solve();
+                sx.activate();
+                RESET = true;
             }
         }
 
