@@ -48,6 +48,13 @@ inline void DrawSlot(double x1, double y1, double x2, double y2, double rad, Col
     DrawRotatedRect(x1, y1, x2, y2, rad, col);
 }
 
+// Draw centered text
+
+inline void DrawCenteredText(const char* text, double xpos, double ypos, double fontsize, Color col) {
+    double len = MeasureText(text, fontsize);
+    DrawText(text, xpos - len / 2, ypos, fontsize, col);
+}
+
 /*
 
 NOTATION FOR THESE METHODS
