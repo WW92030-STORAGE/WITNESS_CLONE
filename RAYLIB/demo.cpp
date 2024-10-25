@@ -6,19 +6,6 @@
 #include "witnessclone.h"
 #include "raylibutils.h"
 
-void disp(pair<double, double> p) {
-    cout << "[" << p.first << " " << p.second << "]";
-}
-
-inline Color getColor(EntityColor::Color c) {
-    Color res;
-    res.r = ((c>>16) % 256);
-    res.g = ((c>>8) % 256);
-    res.b = (c % 256);
-    res.a = 255;
-    return res;
-}
-
 double THICKNESS = 0.02;
 double gapprop = 0.5;
 double START_RAD = 2.5;
