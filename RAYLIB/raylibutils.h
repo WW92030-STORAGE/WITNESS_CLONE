@@ -7,6 +7,7 @@
 #include <memory>
 #include <cmath>
 #include <vector>
+#include <functional>
 
 // #include "raylibutils.h"
 
@@ -20,6 +21,14 @@ inline void Rect2Points(double x, double y, double w, double h, Color col) {
     }
     Rectangle rect = {x, y, w - x, h - y};
     DrawRectangleRec(rect, col);
+}
+
+// Draw an axis aligned rectangle centered at some point and with a specified dimension
+
+inline void DrawCenteredRect(double x, double y, double w, double h, Color col) {
+    w = std::abs(w);
+    h = std::abs(h);
+    DrawRectangleRec({x - w * 0.5, y - h * 0.5, w, h}, col);
 }
 
 // Draw a rotated rectangle parallel to two points and with a specified half-thickness
@@ -48,11 +57,62 @@ inline void DrawSlot(double x1, double y1, double x2, double y2, double rad, Col
     DrawRotatedRect(x1, y1, x2, y2, rad, col);
 }
 
-// Draw centered text
+// Draw centered text centered at some X position but going down from the Y position
 
 inline void DrawCenteredText(const char* text, double xpos, double ypos, double fontsize, Color col) {
     double len = MeasureText(text, fontsize);
     DrawText(text, xpos - len / 2, ypos, fontsize, col);
+}
+
+// Draw centered text centered in both directions
+
+inline void DrawCenteredTextXY(const char* text, double xpos, double ypos, double fontsize, Color col) {
+    double len = MeasureText(text, fontsize);
+    DrawText(text, xpos - len / 2, ypos - fontsize / 2, fontsize, col);
+}
+
+// Draw a button that does something when hit
+// The "something" is a callable of type void()
+// params: (text, rec, fun, fontsize, texcol, butcol, bordcol, border)
+
+inline bool DrawButton(const char* text, Rectangle rec, std::function<void()> fun, double fontsize, Color texcol, Color butcol, Color bordcol, double border) {
+    if (border > 0) DrawRectangleRec(rec, bordcol);
+    DrawRectangle(rec.x + border, rec.y + border, rec.width - 2 * border, rec.height - 2 * border, butcol);
+    DrawCenteredTextXY(text, rec.x + rec.width / 2, rec.y + rec.height / 2, fontsize, texcol);
+
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        Vector2 mp = GetMousePosition();
+        if (mp.x >= rec.x && mp.x <= rec.x + rec.width) {
+            if (mp.y >= rec.y && mp.y <= rec.y + rec.height) {
+                fun();
+                return true;
+            }
+        }
+    }
+
+    return false;
+}
+
+// Draw a button centered in both directions
+// params: (text, x, y, w, h, fun, fontsize, texcol, butcol, bordcol, border)
+//          text  numbers...  void() number  colors ...............   number
+
+inline bool DrawCenteredButton(const char* text, double x, double y, double w, double h, std::function<void()> fun, double fontsize, Color texcol, Color butcol, Color bordcol, double border) {
+    if (border > 0) DrawCenteredRect(x, y, w, h, bordcol);
+    DrawCenteredRect(x, y, w - 2 * border, h - 2 * border, butcol);
+    DrawCenteredTextXY(text, x, y, fontsize, texcol);
+
+    if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+        Vector2 mp = GetMousePosition();
+        if (mp.x >= x - w / 2 && mp.x <= x + w / 2) {
+            if (mp.y >= y - h / 2 && mp.y <= y + h / 2) {
+                fun();
+                return true;
+            }
+        }
+    }
+
+    return false;
 }
 
 /*
@@ -181,6 +241,19 @@ inline std::vector<Vector2> precvec2(Vector2 a, Vector2 b) {
 
 inline bool equals(Vector2 v, Vector2 w) {
     return v.x == w.x && v.y == w.y;
+}
+
+void disp(std::pair<double, double> p) {
+    std::cout << "[" << p.first << " " << p.second << "]";
+}
+
+inline Color getColor(EntityColor::Color c) {
+    Color res;
+    res.r = ((c>>16) % 256);
+    res.g = ((c>>8) % 256);
+    res.b = (c % 256);
+    res.a = 255;
+    return res;
 }
 
 // CONVERSION METHODS CONVERSION METHODS CONVERSION METHODS CONVERSION METHODS
