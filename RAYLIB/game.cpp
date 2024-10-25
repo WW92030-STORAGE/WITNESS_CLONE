@@ -10,19 +10,6 @@
 #include "witnessclone.h"
 #include "raylibutils.h"
 
-void disp(pair<double, double> p) {
-    cout << "[" << p.first << " " << p.second << "]";
-}
-
-inline Color getColor(EntityColor::Color c) {
-    Color res;
-    res.r = ((c>>16) % 256);
-    res.g = ((c>>8) % 256);
-    res.b = (c % 256);
-    res.a = 255;
-    return res;
-}
-
 // Global variables
 
 double THICKNESS = 0.02; // Half-thickness of the lines as a proportion of the grid minimum dimension (minimum of width and height)
@@ -65,6 +52,26 @@ std::pair<int, int> startpos;
 double INTERACTION_EPSILON = 1;
 
 int SCORE = 0;
+
+
+// UI
+
+bool EnableSkip = true;
+bool SkipShowsSolution = false;
+bool EnableShowSolution = false;
+bool IN_SETTINGS = false;
+int P_LATENCY = 0;
+
+// WHAT TO DO?
+
+bool P_TRIX = true; // Challenge triangles
+bool P_BLOB3 = true; // Challenge blobs (9-3-2)
+bool P_BLOB2 = true; // Challenge blobs (8-2-4)
+bool P_BLOCK = true; // Challenge blocks
+bool P_STARDOT = true; // Challenge stars and dots
+bool P_DOT = true; // 4 dots 2 cuts
+bool P_MAZE = true; // Random maze
+bool P_STAR = true; // Random 4 stars
 
 // RANK = Y | FILE = X
 
@@ -110,14 +117,34 @@ inline void drawEndPoint(int x, int y, Grid g, std::pair<double, double> POS, do
 }
 
 inline void pickgrid() {
-    int decisionmaking = rand() % 4;
+    thegrid = randomgrid.randMaze();
+    const int NUM_PUZ = 8;
 
-    std::cout << "CHOOSING GRID... "<< decisionmaking << "\n";
+    std::vector<int> shuffle;
+    for (int i = 0; i < NUM_PUZ; i++) {
+        shuffle.push_back(i);
+    }
 
-                if (decisionmaking == 0) thegrid = randomgrid.randChallengeBlocks(2);
-                if (decisionmaking == 1) thegrid = randomgrid.randBlobs(9, 3, 2);
-                if (decisionmaking == 2) thegrid = randomgrid.randChallengeStars(2);
-                if (decisionmaking == 3) thegrid = randomgrid.randTriangles(10, 2);
+    std::random_shuffle(shuffle.begin(), shuffle.end());
+
+    int index = 0;
+    while (index < shuffle.size()) {
+        int decisionmaking = shuffle[index];
+        if (decisionmaking == 0 && P_BLOCK) thegrid = randomgrid.randChallengeBlocks(2);
+        else if (decisionmaking == 1 && P_BLOB3) thegrid = randomgrid.randBlobs(9, 3, 2);
+        else if (decisionmaking == 2 && P_STARDOT) thegrid = randomgrid.randChallengeStars(2);
+        else if (decisionmaking == 3 && P_TRIX) thegrid = randomgrid.randTriangles(10, 2);
+        else if (decisionmaking == 4 && P_BLOB2) thegrid = randomgrid.randBlobs(8, 2, 4);
+        else if (decisionmaking == 5 && P_DOT) thegrid = randomgrid.randDots(4, 2);
+        else if (decisionmaking == 6 && P_STAR) thegrid = randomgrid.randStars();
+        else if (decisionmaking == 7 && P_MAZE) thegrid = randomgrid.randMaze();
+        else {
+            index++;
+            continue;
+        }
+
+        break;
+    }
 }
 
 void render(Grid g, const int width, const int height, double marginprop = 0.1, bool buffer = true, bool clear = true) { 
@@ -287,11 +314,79 @@ inline void drawTitleScreen(int screenWidth, int screenHeight) {
 
     const int FS = 40;
     const double SP = cy * 0.2;
-    const double LS = FS * 0.25;
 
     DrawCenteredText("WELCOME TO WITNESS_CLONE", cx, SP, FS, WHITE);
-    DrawCenteredText("PRESS RMB TO BEGIN", cx, SP + FS + LS, FS, WHITE);
+    DrawCenteredText("PRESS RMB TO BEGIN", cx, SP + FS, FS, WHITE);
+
+    DrawCenteredText("LMB TO DRAW LINES/SUBMIT", cx, SP + 3 * FS, FS, WHITE);
+    DrawCenteredText("RMB TO CANCEL/CHANGE PUZZLE", cx, SP + 4 * FS, FS, WHITE);
+    if (EnableSkip) {
+        if (SkipShowsSolution) DrawCenteredText("SKIP TO SOLVE FOR YOU", cx, SP + 5 * FS, FS, WHITE);
+        else DrawCenteredText("SKIP TO MOVE TO NEXT PUZ", cx, SP + 5 * FS, FS, WHITE);
+    }
+    if (EnableShowSolution) DrawCenteredText("? TO SHOW SOLUTION", cx, SP + 6 * FS, FS, WHITE);
+
+
+    DrawCenteredText("P FOR SETTINGS", cx, SP + 7 * FS, FS, WHITE);
 }
+
+// Game state functions
+
+void resetProgress() {
+    std::cout << "PROGRESS RESET\n";
+    SCORE = 0;
+}
+
+inline void toggleSettings(int x) {
+    if (x == 0) P_TRIX = !P_TRIX; // Challenge triangles
+    if (x == 1) P_BLOB3 = !P_BLOB3; // Challenge blobs (9-3-2)
+    if (x == 2) P_BLOB2 = !P_BLOB2; // Challenge blobs (8-2-4)
+    if (x == 3) P_BLOCK = !P_BLOCK; // Challenge blocks
+    if (x == 4) P_STARDOT = !P_STARDOT; // Challenge stars and dots
+    if (x == 5) P_DOT = !P_DOT; // 4 dots 2 cuts
+    if (x == 6) P_MAZE = !P_MAZE; // Random maze
+    if (x == 7) P_STAR = !P_STAR; // Random 4 stars
+}
+
+inline const char* onoff(bool b) {
+    return (b ? "ON" : "OFF");
+}
+
+inline Color onoffcol(bool b) {
+    return (b ? GREEN : RED);
+}
+inline Color onoffdim(bool b) {
+    return (b ? DARKGREEN : MAROON);
+}
+
+inline void doSettings(int screenWidth, int screenHeight) {
+    ClearBackground(BLACK);
+    double cx = screenWidth / 2;
+    double cy = screenHeight / 2;
+
+    const int FS = 40;
+    const double SP = std::max(60.0, cy * 0.2);
+
+    const double BL = 600;
+    const double BH = 50;
+    const double BS = 60;
+    const double BD = 4;
+
+    DrawCenteredText("GAME SETTINGS", cx, 0, FS, WHITE);
+    DrawCenteredButton("TRIANGLES", cx, SP, BL, BH, [] {toggleSettings(0);}, FS, WHITE, onoffcol(P_TRIX), onoffdim(P_TRIX), BD);
+    DrawCenteredButton("TERNARY BLOBS", cx, SP + BS, BL, BH, [] {toggleSettings(1);}, FS, WHITE, onoffcol(P_BLOB3), onoffdim(P_BLOB3), BD);
+    DrawCenteredButton("BINARY BLOBS", cx, SP + 2 * BS, BL, BH, [] {toggleSettings(2);}, FS, WHITE, onoffcol(P_BLOB2), onoffdim(P_BLOB2), BD);
+    DrawCenteredButton("BLOCKS", cx, SP + 3 * BS, BL, BH, [] {toggleSettings(3);}, FS, WHITE, onoffcol(P_BLOCK), onoffdim(P_BLOCK), BD);
+    DrawCenteredButton("STARS + DOTS", cx, SP + 4 * BS, BL, BH, [] {toggleSettings(4);}, FS, WHITE, onoffcol(P_STARDOT), onoffdim(P_STARDOT), BD);
+    DrawCenteredButton("DOTS", cx, SP + 5 * BS, BL, BH, [] {toggleSettings(5);}, FS, WHITE, onoffcol(P_DOT), onoffdim(P_DOT), BD);
+    DrawCenteredButton("MAZE", cx, SP + 6 * BS, BL, BH, [] {toggleSettings(6);}, FS, WHITE, onoffcol(P_MAZE), onoffdim(P_MAZE), BD);
+    DrawCenteredButton("STARS", cx, SP + 7 * BS, BL, BH, [] {toggleSettings(7);}, FS, WHITE, onoffcol(P_STAR), onoffdim(P_STAR), BD);
+    DrawCenteredButton("RESET PROGRESS", cx, screenHeight - 60, BL, BH, [] {resetProgress();}, FS, WHITE, BLUE, DARKBLUE, BD);
+
+    
+}
+
+// Main method
 
 int main() {
     srand(time(0));
@@ -318,6 +413,23 @@ int main() {
         Vector2 md = GetMouseDelta();
 
         if (LATENCY > 0) LATENCY--;
+        if (P_LATENCY > 0) P_LATENCY--;
+
+        if (STARTED && GetKeyPressed() == KEY_P && P_LATENCY == 0) {
+            std::cout << "P PRESSED " << IN_SETTINGS << std::endl;
+            IN_SETTINGS = !IN_SETTINGS;
+            P_LATENCY = 8;
+        } 
+
+        if (STARTED && IN_SETTINGS) {
+            LOCKEDIN = false;
+            SOLVED = false;
+            RESET = false;
+
+            doSettings(screenWidth, screenHeight);
+            EndDrawing();
+            continue;
+        }
 
         
 
@@ -680,19 +792,56 @@ int main() {
 
         // UI
 
-        DrawRectangle(screenWidth - 96, screenHeight - 48, 128, 64, BLUE);
-        DrawText("SKIP", screenWidth - 88, screenHeight - 40, 32, WHITE);
-        DrawFPS(10, 10);
+        if (STARTED) {
+            DrawFPS(10, 10);
+            std::string scoredata = std::to_string(SCORE) + " SOLVED";
+            DrawText(scoredata.c_str(), 10, 35, 20, WHITE);
 
-        if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
-            auto mpmp = GetMousePosition();
-            if (mpmp.x >= screenWidth - 96 && mpmp.y >= screenHeight - 48) {
-                LINE = WHITE;
-                sx.set(thegrid);
-                sx.solve();
-                sx.activate();
-                RESET = true;
+            if (EnableSkip) {
+
+            DrawRectangle(screenWidth - 96, screenHeight - 48, 128, 48, BLUE);
+            DrawText("SKIP", screenWidth - 88, screenHeight - 40, 32, WHITE);
+
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                auto mpmp = GetMousePosition();
+                if (mpmp.x >= screenWidth - 96 && mpmp.y >= screenHeight - 48) {
+                    if (SkipShowsSolution) {
+                        LINE = WHITE;
+                        sx.set(thegrid);
+                        sx.solve();
+                        sx.activate();
+                        RESET = true;
+                    }
+                    else {
+                        sx.deactivate();
+                        pickgrid();
+                        SOLVED = false;
+                        RESET = false;
+                        LOCKEDIN = false;
+                    }
+                }
             }
+
+            }
+
+            if (EnableShowSolution) {
+
+            DrawRectangle(screenWidth - 80, screenHeight - 96, 128, 48, GRAY);
+            DrawText("?", screenWidth - 64, screenHeight - 88, 32, WHITE);
+            if (IsMouseButtonPressed(MOUSE_BUTTON_LEFT)) {
+                auto mpmp = GetMousePosition();
+                if (mpmp.x >= screenWidth - 80 && mpmp.y >= screenHeight - 96 && mpmp.y < screenHeight - 48) {
+                    LINE = BLUE;
+                    LOCKEDIN = false;
+                    RESET = false;
+                    sx.set(thegrid);
+                    sx.solve();
+                    sx.activate();
+                }
+            }
+
+            }
+
         }
 
         EndDrawing();
