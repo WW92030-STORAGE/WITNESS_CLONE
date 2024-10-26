@@ -147,7 +147,7 @@ inline void pickgrid() {
     }
 }
 
-void render(Grid g, const int width, const int height, double marginprop = 0.1, bool buffer = true, bool clear = true) { 
+void render(Grid& g, const int width, const int height, double marginprop = 0.1, bool buffer = true, bool clear = true) { 
     if (buffer) BeginDrawing();
     if (clear) ClearBackground(BG);
     int n = std::min(width, height);
