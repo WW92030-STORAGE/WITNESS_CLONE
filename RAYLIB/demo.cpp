@@ -17,7 +17,7 @@ double SPACING;
 int RANKS = 4;
 int FILES = 4;
 
-void render(Grid g, const int width, const int height, double marginprop = 0.1, bool buffer = true) { 
+void render(Grid& g, const int width, const int height, double marginprop = 0.1, bool buffer = true) { 
     if (buffer) BeginDrawing();
     ClearBackground(BLACK);
     int n = std::min(width, height);
